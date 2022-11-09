@@ -131,7 +131,6 @@ struct ChessPieceTypes{
         return IntRect(pieceTypePX, colorPX, ChessCoord::SIZE, ChessCoord::SIZE);
     }
     static void validate(int pieceType, int color){
-
         if(pieceType<0||pieceType>= 6){
             cout<<"The piece type isn't valid\n";
             /// DEV TODO: throw PieceTypeException
@@ -193,7 +192,7 @@ struct ChessBoard
     ChessBoard() {
         setBoardImage(Chess::BOARD_SPRITESHEET_FILENAME);
     }
-    ChessBoard(string& boardImageFilename) {
+    ChessBoard(string boardImageFilename) {
         setBoardImage(imageFilename);
     }
     void setBoardImage(string boardImageFilename){
