@@ -4,7 +4,8 @@
 using namespace std;
 using namespace sf;
 
-Texture
+Texture ChessPiece::piecesSpriteSheet=ChessImages::loadResource("assets/pieces_spritesheet.png");
+
 void initPieces(ChessPiece* &whitePieces, ChessPiece* &blackPieces) {
     for (int i = 0; i <6; i++) {
         whitePieces[i] = ChessPiece(
@@ -24,12 +25,14 @@ void initPieces(ChessPiece* &whitePieces, ChessPiece* &blackPieces) {
 
 int main()
 {
+
     RenderWindow window(VideoMode(800, 800), "Chess");
     ChessPiece* whitePieces = new ChessPiece[8];
     ChessPiece* blackPieces = new ChessPiece[8];
     ChessBoard board;
-    Texture texture;
     initPieces(whitePieces, blackPieces);
+
+    Sprite test(ChessPiece::piecesSpriteSheet);
 
     while (window.isOpen())
     {
@@ -39,14 +42,14 @@ int main()
             if (event.type == Event::Closed)
                 window.close();
         }
-
-        window.clear();
-        window.draw(board.sprite);
-        for (int i = 0; i < 6; i++) {
-            window.draw(whitePieces[i].sprite);
-            window.draw(blackPieces[i].sprite);
-        }
-        ChessCoord pawn('A', 2), horse('B',1);
+        window.draw(test);
+//        window.clear();
+//        window.draw(board.sprite);
+//        for (int i = 0; i < 6; i++) {
+//            window.draw(whitePieces[i].sprite);
+//            window.draw(blackPieces[i].sprite);
+//        }
+//        ChessCoord pawn('A', 2), horse('B',1);
         window.display();
     }
 

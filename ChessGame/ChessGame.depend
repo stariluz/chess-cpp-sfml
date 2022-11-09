@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1667955950 source:d:\adrian\uach\semestre 3\conceptos avanzados de programacion\ajedrez\chessgame\main.cpp
+1667957104 source:d:\adrian\uach\semestre 3\conceptos avanzados de programacion\ajedrez\chessgame\main.cpp
 	<SFML/Graphics.hpp>
 	"Chess.h"
 	<iostream>
@@ -413,7 +413,7 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1667955950 d:\adrian\uach\semestre 3\conceptos avanzados de programacion\ajedrez\chessgame\chess.h
+1667957290 d:\adrian\uach\semestre 3\conceptos avanzados de programacion\ajedrez\chessgame\chess.h
 	<SFML/Graphics.hpp>
 	<assert.h>
 	<iostream>
