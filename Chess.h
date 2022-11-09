@@ -11,9 +11,9 @@ struct Chess{
     static const string PIECES_SPRITESHEET_FILENAME;
 };
 
-struct ChessImageException :public exception {
+struct ChessImageException : public exception {
     const char* what() throw() {
-        return "Couldn't load the resourse";
+        return "Couldn't load the resource";
     }
 };
 
@@ -21,10 +21,12 @@ static Texture loadResource(string filename){
     Texture texture;
     cout << filename<<"\n";
     if(!texture.loadFromFile(filename)){
+        // DEV TODO: throw ChessImageException
         cout<<"IMAGE WAS NOT LOADED.";
     }
     return texture;
 }
+
 struct ChessCoord {
     static const int SIZE;
     int valueX, y;
@@ -43,21 +45,21 @@ struct ChessCoord {
         setY(y);
     }
 
-    void setX(char x) {
-        int valueX = getValueFromX(x);
-        assert(valueX > 0 && valueX <= 8);
-        this->x = x;
-        this->valueX = valueX;
+    void setX(char _x) {
+        int _valueX = getValueFromX(_x);
+        assert(_valueX > 0 && _valueX <= 8);
+        x = _x;
+        valueX = _valueX;
 
     }
-    void setY(int y) {
-        assert(y > 0 && y <= 8);
-        this->y = y;
+    void setY(int _y) {
+        assert(_y > 0 && _y <= 8);
+        y = _y;
     }
-    void setValueX(int valueX) {
-        assert(valueX > 0 && valueX <= 8);
-        this->valueX = valueX;
-        this->x = getXFromValue(valueX);
+    void setValueX(int _valueX) {
+        assert(_valueX > 0 && _valueX <= 8);
+        valueX = _valueX;
+        x = getXFromValue(_valueX);
     }
     static int getValueFromX(char x) {
         return ((int)x - 64);
