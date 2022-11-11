@@ -48,10 +48,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-DSFML_STATIC" />
-			<Add directory="D:/src/Cpp_Libraries/SFML-2.5.1-windows-gcc-7.3.0-mingw-32-bit/SFML-2.5.1/include" />
+			<Add directory="SFML-2.5.1/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="D:/src/Cpp_Libraries/SFML-2.5.1-windows-gcc-7.3.0-mingw-32-bit/SFML-2.5.1/lib" />
+			<Add directory="SFML-2.5.1/lib" />
 		</Linker>
 		<Unit filename="Chess.h" />
 		<Unit filename="assets/chess_board.jpg" />
