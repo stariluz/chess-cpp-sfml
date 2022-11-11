@@ -5,8 +5,8 @@ using namespace std;
 using namespace sf;
 
 /// INICIALIZAR DATOS DEL HEADER "CHESS:H"
-const string Chess::BOARD_SPRITESHEET_FILENAME="assets/chess_board.jpg"; /// Constante para la ubicación de la imagen del tablero
-const string Chess::PIECES_SPRITESHEET_FILENAME="assets/pieces_spritesheet.png"; /// Constante para la ubicación del spritesheet de piezas
+const string Chess::BOARD_SPRITESHEET_FILENAME="./assets/chess_board.jpg"; /// Constante para la ubicación de la imagen del tablero
+const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png"; /// Constante para la ubicación del spritesheet de piezas
 const int ChessCoord::SIZE=100; /// Constante para la unidad en pixeles
 const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FILENAME); /// Abrir el spritesheet de piezas
 
