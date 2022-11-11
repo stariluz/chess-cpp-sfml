@@ -3,7 +3,7 @@ Prototipo de un juego de ajedrez realizado por el equipo while para la materia d
 
 ## Prerequisitos:
 Para poder utilizar el código deben haber hecho la [instalación y configuración de la librería SFML para CodeBlocks](https://www.sfml-dev.org/tutorials/2.5/start-cb.php), debido a que la configuración es por proyecto deben checar que su versión de este proyecto esté configurada bien para su computadora.
-- Hasta el momento se está usando librerías estáticas por lo que recuerden agregar la <b>-s<-b> en la importación de las librerías, si es que no les aparece la configuración.
+- Hasta el momento se está usando librerías estáticas por lo que recuerden agregar la <b>-s</b> en la importación de las librerías, si es que no les aparece la configuración.
 - En caso de no lograr configurar SFML correctamente mis recomendaciones son:
   1. Borrar CodeBlocks y [descargar la versión de 32 bits con MinGW de 32 bits](https://www.fosshub.com/Code-Blocks.html?dwl=codeblocks-20.03-32bit-mingw-32bit-setup.exe).
   2. Descargar la versión de [SMFL para GCC 7.0 MinGW (DW2) de 32 bits](https://www.sfml-dev.org/files/SFML-2.5.1-windows-gcc-7.3.0-mingw-32-bit.zip).
