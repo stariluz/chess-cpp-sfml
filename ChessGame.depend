@@ -418,13 +418,14 @@
 	<assert.h>
 	<iostream>
 
-1668008426 source:d:\adrian\juego-ajedrez-cap\main.cpp
+1668125074 source:d:\adrian\juego-ajedrez-cap\main.cpp
 	<SFML/Graphics.hpp>
 	"Chess.h"
 	<iostream>
 
-1668008010 d:\adrian\juego-ajedrez-cap\chess.h
+1668125446 d:\adrian\juego-ajedrez-cap\chess.h
 	<SFML/Graphics.hpp>
+	<list>
 	<assert.h>
 	<iostream>
 

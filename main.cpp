@@ -12,18 +12,16 @@ const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FIL
 
 
 /// Definición de protocolos
-void initPieces(ChessPiece*&, ChessPiece*&);
+void initPieces(ChessPiece**&, ChessPiece**& );
 
 int main()
 {
 
-    RenderWindow window(VideoMode(800, 800), "Chess");
-    ChessPiece* whitePieces = new ChessPiece[8];
-    ChessPiece* blackPieces = new ChessPiece[8];
-
+    RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
+    ChessPiece** whitePieces = new ChessPiece*[8];
+    ChessPiece** blackPieces = new ChessPiece*[8];
     ChessBoard board;
 
-    Sprite test(ChessPiece::spriteSheet);
     initPieces(whitePieces, blackPieces);
 
     while (window.isOpen())
@@ -32,15 +30,28 @@ int main()
         while (window.pollEvent(event))
         {
             if (event.type == Event::Closed)
+            {
                 window.close();
+            }
+            else if (event.type == Event::MouseButtonPressed)
+            {
+                if (event.mouseButton.button == Mouse::Left)
+                {
+                    ChessGame::onClick(event.mouseButton.x, event.mouseButton.y);
+                }
+            }
+            else if (event.type == Event::MouseMoved && ChessGame::status=="selected")
+            {
+                ChessGame::dragPiece(event.mouseMove.x, event.mouseMove.y);
+            }
         }
         window.clear();
         window.draw(board.sprite);
         for (int i = 0; i < 6; i++) {
-            window.draw(whitePieces[i].sprite);
-            window.draw(blackPieces[i].sprite);
+
+            window.draw((*whitePieces[i]).sprite);
+            window.draw((*blackPieces[i]).sprite);
         }
-        ChessCoord pawn('A', 2), horse('B',1);
 
         window.display();
     }
@@ -48,12 +59,12 @@ int main()
     return 0;
 }
 
-void initPieces(ChessPiece*& whitePieces, ChessPiece*& blackPieces) {
+void initPieces(ChessPiece**& whitePieces, ChessPiece**& blackPieces) {
     for (int i = 0; i < 6; i++) {
-        whitePieces[i] = ChessPiece(
+        whitePieces[i]=ChessPiece::createPiece(
             ChessCoord(i + 1, 1), i, 0
         );
-        blackPieces[i] = ChessPiece(
+        blackPieces[i]=ChessPiece::createPiece(
             ChessCoord(i + 1, 2), i, 1
         );
     }
