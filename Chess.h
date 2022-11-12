@@ -17,12 +17,24 @@ struct ChessImageException : public exception {
     }
 };
 
+struct PieceTypeException : public exception{
+    const char* what() throw() {
+        return "The piece type isn't valid";
+    }
+};
+
+struct PieceColorException : public exception{
+    const char* what() throw() {
+        return "The color isn't valid";
+    }
+};
+
 static Texture loadResource(string filename){
     Texture texture;
     cout << filename<<"\n";
     if(!texture.loadFromFile(filename)){
-        // DEV TODO: throw ChessImageException
         cout<<"IMAGE WAS NOT LOADED.";
+        throw ChessImageException();
     }
     return texture;
 }
@@ -133,9 +145,12 @@ struct ChessPieceTypes{
     static IntRect getIntRectOfSpriteSheet(int pieceType, int color){
         try{
             validate(pieceType,color);
+        }catch(PieceTypeException& e){
+            cout<<"Exception caught: " << e.what() << endl;
+        }catch(PieceColorException& ee){
+            cout<<"Exception caught: " << ee.what() << endl;
         }catch(...){
             cout<<"ERROR\n";
-            /// DEV TODO: catch PieceTypeException and PieceColorException
         }
         int pieceTypePX=pieceType*ChessCoord::SIZE;
         int colorPX=color*ChessCoord::SIZE;
@@ -143,11 +158,10 @@ struct ChessPieceTypes{
     }
     static void validate(int pieceType, int color){
         if(pieceType<0||pieceType>= 6){
-            cout<<"The piece type isn't valid\n";
-            /// DEV TODO: throw PieceTypeException
+            throw PieceTypeException();
         }else if(color<0||color>=2){
             cout<<"The color isn't valid\n";
-            /// DEV TODO: throw PieceColorException
+            throw PieceColorException();
         }
     }
 };
