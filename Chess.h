@@ -254,6 +254,101 @@ struct Pawn : public ChessPiece
     }
 };
 
+struct Tower : public ChessPiece
+{
+    char icon = 'T';
+    Tower ()
+    {
+        position = ChessCoord(1, 1);
+    }
+    Tower(ChessCoord position, int color)
+    {
+        this->position = position;
+        setSprite(ChessPieceTypes::T, color);
+    }
+    Tower(ChessCoord position, Sprite sprite)
+    {
+        this->position = position;
+        setSprite(sprite);
+    }
+};
+
+struct Horse : public ChessPiece
+{
+    char icon = 'H';
+    Horse ()
+    {
+        position = ChessCoord(1, 1);
+    }
+    Horse(ChessCoord position, int color)
+    {
+        this->position = position;
+        setSprite(ChessPieceTypes::H, color);
+    }
+    Horse(ChessCoord position, Sprite sprite)
+    {
+        this->position = position;
+        setSprite(sprite);
+    }
+};
+
+struct Bishop : public ChessPiece
+{
+    char icon = 'B';
+    Bishop ()
+    {
+        position = ChessCoord(1, 1);
+    }
+    Bishop(ChessCoord position, int color)
+    {
+        this->position = position;
+        setSprite(ChessPieceTypes::B, color);
+    }
+    Bishop(ChessCoord position, Sprite sprite)
+    {
+        this->position = position;
+        setSprite(sprite);
+    }
+};
+
+struct Queen : public ChessPiece
+{
+    char icon = 'Q';
+    Queen ()
+    {
+        position = ChessCoord(1, 1);
+    }
+    Queen(ChessCoord position, int color)
+    {
+        this->position = position;
+        setSprite(ChessPieceTypes::Q, color);
+    }
+    Queen(ChessCoord position, Sprite sprite)
+    {
+        this->position = position;
+        setSprite(sprite);
+    }
+};
+
+struct King : public ChessPiece
+{
+    char icon = 'K';
+    King ()
+    {
+        position = ChessCoord(1, 1);
+    }
+    King(ChessCoord position, int color)
+    {
+        this->position = position;
+        setSprite(ChessPieceTypes::K, color);
+    }
+    King(ChessCoord position, Sprite sprite)
+    {
+        this->position = position;
+        setSprite(sprite);
+    }
+};
+
 //Estructura del tablero
 struct ChessBoard
 {
