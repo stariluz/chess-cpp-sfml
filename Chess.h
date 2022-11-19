@@ -4,13 +4,21 @@
 #include <list>
 #include <assert.h>
 #include <iostream>
+#include <windows.h>
+#include <stdio.h>
+
 using namespace std;
 using namespace sf;
+//Estructura del Ajedrez
 struct Chess{
+    // Carga strings estaticos constantes para colocar las direcciones de las texturas de tablero y piezas
     static const string BOARD_SPRITESHEET_FILENAME;
     static const string PIECES_SPRITESHEET_FILENAME;
 };
 
+/*
+    Estructuras de las exepciones
+*/
 struct ChessImageException : public exception {
     const char* what() throw() {
         return "Couldn't load the resource";
@@ -29,6 +37,7 @@ struct PieceColorException : public exception{
     }
 };
 
+//Metodo para cargar las texturas
 static Texture loadResource(string filename){
     Texture texture;
     cout << filename<<"\n";
@@ -38,7 +47,7 @@ static Texture loadResource(string filename){
     }
     return texture;
 }
-
+//Estructura que almacena el manejo de cordenadas en el tablero por cada pieza
 struct ChessCoord {
     static const int SIZE;
     int valueX, y;
@@ -133,7 +142,7 @@ struct ChessCoord {
     }
 };
 
-
+//Estructura de tipos de piezas
 struct ChessPieceTypes{
     static const int K=0; // King
     static const int Q=1; // Queen
@@ -166,7 +175,7 @@ struct ChessPieceTypes{
     }
 };
 
-
+//Estructura de piezas, importante para la creacion y el manejo de cada una
 struct ChessPiece
 {
     ///////// STATICS
@@ -234,7 +243,7 @@ struct ChessPiece
     //////////////////////
 };
 int ChessPiece::numberOfPieces=0;
-
+/*Estructuras dedicadas a cada tipo de pieza*/
 struct Pawn : public ChessPiece
 {
     char icon = 'P';
@@ -433,8 +442,9 @@ struct ChessBoard
         }
     }
 };
+//??
 list<ChessPiece*> ChessBoard::piecesOnBoard=list<ChessPiece*>();
-
+//Aqui se implementa el metodo Crear piezas, que se encuentra dentro de ChessPiece en forma de un metodo estatico
 ChessPiece* ChessPiece::createPiece(ChessCoord _position, int pieceType, int color){
     ChessPiece *newPiece=new ChessPiece(_position, pieceType, color);
     numberOfPieces++;
@@ -442,7 +452,10 @@ ChessPiece* ChessPiece::createPiece(ChessCoord _position, int pieceType, int col
     return newPiece;
 }
 
-
+/*
+    Estructura del juego, maneja la seleccion de piezas y las mecanicas de seleccion
+        incluye el metodo de desplazamiento de pieza
+*/
 struct ChessGame{
     static string status;
     static ChessPiece* selectedPiece;
@@ -471,9 +484,102 @@ struct ChessGame{
         selectedPiece->setPosition(ChessCoord::getChessPosition(pxX, pxY));
     }
 };
+//un string que se usa para declarar el tipo de estado de ideal en el que no se encuentra seleccionada ninguna pieza
 string ChessGame::status="iddle";
+//Establece en ChessGame la pieza selecionada como nula
 ChessPiece* ChessGame::selectedPiece=NULL;
-
+//Variables estaticas para el tamaño de la ventana
 static const int WINDOW_HORIZONTAL_SIZE=ChessCoord::SIZE*8;
 static const int WINDOW_VERTICAL_SIZE=ChessCoord::SIZE*8;
+
+/*
+    Esta estructura llevara el manejo del reloj del juego
+*/
+struct Game_Timer
+{
+    static bool eneable;
+    static int seconds, minuts,limit_seconds,limit_minuts;
+
+    Game_Timer()
+    {
+        eneable = false;
+        init_Timer();
+    }
+
+
+    void init_Timer()
+    {
+        seconds = 0;
+        minuts = 0;
+    }
+
+    operator()()
+    {
+        cout<<"Iniciando contador"<<endl;
+        run();
+    }
+
+    void on_timer()
+    {
+        eneable = true;
+    }
+    void off_timer()
+    {
+        eneable = false;
+    }
+
+    void run ()
+    {
+        int limit_time = convert_Time_Limit();
+        int current_time = 0;
+        if(eneable==true)
+        {
+            while(limit_time>current_time){
+                Sleep(1000);
+                if(seconds == 60){
+                    seconds = 0;
+                    minuts += 1;
+                    current_time = minuts*60;
+                }
+                seconds +=1;
+                current_time += current_time + seconds;
+            }
+        }
+        //Termino del turno
+        cout<<"Cambiando turno"<<endl;
+    }
+
+    int convert_Time_Limit()
+    {
+        int sum;
+        sum = limit_seconds + (limit_minuts*60);
+        return sum;
+    }
+
+    int conver_Time()
+    {
+
+    }
+
+    void reset_Timer()
+    {
+        seconds = 0;
+        minuts = 0;
+    }
+
+    void setMinutsLimit(int new_minuts_limit){
+        limit_minuts = new_minuts_limit;
+    }
+
+    void setSecondsLimit(int new_seconds_limit){
+        limit_seconds = new_seconds_limit;
+    }
+
+    friend ostream& operator <<(ostream& os, Game_Timer& _game_timer)
+    {
+        os << _game_timer.minuts <<":"<<_game_timer.seconds;
+        return os;
+    }
+};
+
 #endif // CHESS_H_INCLUDED

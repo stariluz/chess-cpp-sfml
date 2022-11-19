@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "Chess.h"
 #include <iostream>
+#include <thread>
+
 using namespace std;
 using namespace sf;
 
@@ -16,16 +18,29 @@ void initPieces(ChessPiece**&, ChessPiece**& );
 
 int main()
 {
-
+    //Configuracion de la ventana del juego
     RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
+    //Inisializacion de las piezas blancas y negras
     ChessPiece** whitePieces = new ChessPiece*[8];
     ChessPiece** blackPieces = new ChessPiece*[8];
+    //Inicializacion del tablero del juego
     ChessBoard board;
 
-    initPieces(whitePieces, blackPieces);
+    //Inicializamos un contador
 
+    sf::Thread timer_thread(Game_Timer());
+
+    //Metodo initPieces para las piezas blancas y negras
+    initPieces(whitePieces, blackPieces);
+    /*
+        Bucle principal del juego
+        Aqui se manejan los eventos de la ventana
+        Eventos del juego como los clicks
+        Y el dibujado de la pantalla
+    */
     while (window.isOpen())
     {
+        //Eventos
         Event event;
         while (window.pollEvent(event))
         {
@@ -45,7 +60,11 @@ int main()
                 ChessGame::dragPiece(event.mouseMove.x, event.mouseMove.y);
             }
         }
+        //Seccion de dibujado de la pantalla
         window.clear();
+            /*
+                +Aqui se puede introducir cualquier cosa que se quiera dibujar
+            */
         window.draw(board.sprite);
         for (int i = 0; i < 6; i++) {
 
@@ -55,10 +74,10 @@ int main()
 
         window.display();
     }
-
     return 0;
 }
 
+//Metodo para inicializar las piezas
 void initPieces(ChessPiece**& whitePieces, ChessPiece**& blackPieces) {
     for (int i = 0; i < 6; i++) {
         whitePieces[i]=ChessPiece::createPiece(
