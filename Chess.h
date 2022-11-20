@@ -497,13 +497,14 @@ static const int WINDOW_VERTICAL_SIZE=ChessCoord::SIZE*8;
 */
 struct Game_Timer
 {
-    static bool eneable;
-    static int seconds, minuts,limit_seconds,limit_minuts;
+    bool eneable;
+    int seconds, minuts,limit_seconds = 0,limit_minuts = 0;
 
     Game_Timer()
     {
         eneable = false;
         init_Timer();
+        run();
     }
 
 
@@ -515,7 +516,9 @@ struct Game_Timer
 
     operator()()
     {
+        //Aqui se maneja la ejecuccion del hilo cunado se invoca el laucher
         cout<<"Iniciando contador"<<endl;
+        on_timer();
         run();
     }
 
@@ -531,6 +534,7 @@ struct Game_Timer
     void run ()
     {
         int limit_time = convert_Time_Limit();
+        cout<<"Limite de tiempo:"<<limit_time<<endl;
         int current_time = 0;
         if(eneable==true)
         {
@@ -539,14 +543,16 @@ struct Game_Timer
                 if(seconds == 60){
                     seconds = 0;
                     minuts += 1;
-                    current_time = minuts*60;
                 }
                 seconds +=1;
-                current_time += current_time + seconds;
+                cout<<"Segundos:"<<seconds<<endl;
+                current_time = (minuts*60) + seconds;
+                cout<<"Tiempo actual:"<<current_time<<endl;
             }
         }
         //Termino del turno
         cout<<"Cambiando turno"<<endl;
+
     }
 
     int convert_Time_Limit()
@@ -554,11 +560,6 @@ struct Game_Timer
         int sum;
         sum = limit_seconds + (limit_minuts*60);
         return sum;
-    }
-
-    int conver_Time()
-    {
-
     }
 
     void reset_Timer()

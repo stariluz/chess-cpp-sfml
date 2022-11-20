@@ -27,8 +27,9 @@ int main()
     ChessBoard board;
 
     //Inicializamos un contador
-
-    sf::Thread timer_thread(Game_Timer());
+    Game_Timer s;
+    sf::Thread timer_thread(s);
+    timer_thread.launch();
 
     //Metodo initPieces para las piezas blancas y negras
     initPieces(whitePieces, blackPieces);
