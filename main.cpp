@@ -31,6 +31,8 @@ int main()
     sf::Thread timer_thread(s);
     timer_thread.launch();
 
+    //TODO: Crear una variable para establecer el tiempo actual y el limite de tiempo
+
     //Metodo initPieces para las piezas blancas y negras
     initPieces(whitePieces, blackPieces);
     /*
@@ -66,13 +68,28 @@ int main()
             /*
                 +Aqui se puede introducir cualquier cosa que se quiera dibujar
             */
+
+
+
         window.draw(board.sprite);
         for (int i = 0; i < 6; i++) {
 
             window.draw((*whitePieces[i]).sprite);
             window.draw((*blackPieces[i]).sprite);
         }
-
+        //Dibujo del reloj
+            /*
+                Nota: Este segmento se puede comentar si no se encuentra en uso
+                Tambien comente las lineas de arriba del timer para evitar problemas en el rendimiento
+            */
+        if(s.eneable == true)
+        {
+            window.draw(s.clock_sprite);
+            s.hand_timer_sprite.setOrigin(sf::Vector2f(50,50));
+            s.hand_timer_sprite.setPosition(sf::Vector2f(50,50));
+            s.hand_timer_sprite.setRotation(1);
+            window.draw(s.hand_timer_sprite);
+        }
         window.display();
     }
     return 0;

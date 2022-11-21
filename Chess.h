@@ -16,6 +16,9 @@ struct Chess{
     static const string PIECES_SPRITESHEET_FILENAME;
 };
 
+static const string TIMER_FRAME_FILE = "./assets/Marco_reloj.png";
+static const string TIMER_HAND_FILE = "./assets/Manecilla.png";
+
 /*
     Estructuras de las exepciones
 */
@@ -497,31 +500,53 @@ static const int WINDOW_VERTICAL_SIZE=ChessCoord::SIZE*8;
 */
 struct Game_Timer
 {
-    bool eneable;
-    int seconds, minuts,limit_seconds = 0,limit_minuts = 0;
+/*Atributos del Timer*/
+    // Variables con rutas de la imagen del Timer
+    Texture clock_texture, hand_timer_texture;
+    Sprite clock_sprite,hand_timer_sprite;
 
+    //A
+    bool eneable;
+    int seconds, minuts,limit_seconds,limit_minuts;
+/*Constructores*/
     Game_Timer()
     {
         eneable = false;
         init_Timer();
-        run();
     }
 
-
+/*Metodos del Timer*/
+    //Inicializa los valores por defecto del Timer
     void init_Timer()
     {
+        clock_texture = loadResource(TIMER_FRAME_FILE);
+        hand_timer_texture = loadResource(TIMER_HAND_FILE);
+
+        clock_sprite.setTexture(clock_texture);
+        hand_timer_sprite.setTexture(hand_timer_texture);
+
         seconds = 0;
         minuts = 0;
+
+        limit_seconds = 0;
+        limit_minuts = 0;
+
+        on_timer();
     }
 
+    //Aqui se maneja la ejecuccion del hilo cunado se invoca el laucher
     operator()()
     {
-        //Aqui se maneja la ejecuccion del hilo cunado se invoca el laucher
         cout<<"Iniciando contador"<<endl;
+
         on_timer();
+
+        setMinutsLimit(1);
+        setSecondsLimit(0);
+
         run();
     }
-
+    //Metodos de control para el Timer, si se ecnuentra ncendido o apagado
     void on_timer()
     {
         eneable = true;
@@ -530,15 +555,18 @@ struct Game_Timer
     {
         eneable = false;
     }
-
+    //En este metodo se ejecuta todas las acciones del timer
     void run ()
     {
+
         int limit_time = convert_Time_Limit();
         cout<<"Limite de tiempo:"<<limit_time<<endl;
+
         int current_time = 0;
-        if(eneable==true)
-        {
-            while(limit_time>current_time){
+
+        while(limit_time>current_time){
+            if(eneable==true)
+            {
                 Sleep(1000);
                 if(seconds == 60){
                     seconds = 0;
@@ -548,26 +576,29 @@ struct Game_Timer
                 cout<<"Segundos:"<<seconds<<endl;
                 current_time = (minuts*60) + seconds;
                 cout<<"Tiempo actual:"<<current_time<<endl;
+            }else{
+                //No hacer nada
             }
         }
         //Termino del turno
         cout<<"Cambiando turno"<<endl;
-
+        reset_Timer();
     }
-
+    //Esta funcion convierte los limites de tiempo a una unidad unica para su manejo
     int convert_Time_Limit()
     {
         int sum;
         sum = limit_seconds + (limit_minuts*60);
         return sum;
     }
-
+    //Metodo para configurar los calores de segundos y minutos a su valor por defecto
     void reset_Timer()
     {
+        cout<<"Se ha reseteado el Timer"<<endl;
         seconds = 0;
         minuts = 0;
     }
-
+    //Metodos para configurar el limite de tiempo en minutos y segundos
     void setMinutsLimit(int new_minuts_limit){
         limit_minuts = new_minuts_limit;
     }
@@ -575,7 +606,7 @@ struct Game_Timer
     void setSecondsLimit(int new_seconds_limit){
         limit_seconds = new_seconds_limit;
     }
-
+    //Funcion amiga para el operador <<
     friend ostream& operator <<(ostream& os, Game_Timer& _game_timer)
     {
         os << _game_timer.minuts <<":"<<_game_timer.seconds;
