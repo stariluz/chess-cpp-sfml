@@ -18,7 +18,14 @@
 				<Linker>
 					<Add library="sfml-graphics-s-d" />
 					<Add library="sfml-window-s-d" />
+					<Add library="sfml-audio-s-d" />
 					<Add library="sfml-system-s-d" />
+					<Add library="openal32" />
+					<Add library="flac" />
+					<Add library="vorbisenc" />
+					<Add library="vorbisfile" />
+					<Add library="vorbis" />
+					<Add library="ogg" />
 					<Add library="opengl32" />
 					<Add library="freetype" />
 					<Add library="winmm" />
@@ -37,7 +44,14 @@
 					<Add option="-s" />
 					<Add library="sfml-graphics-s" />
 					<Add library="sfml-window-s" />
+					<Add library="sfml-audio-s" />
 					<Add library="sfml-system-s" />
+					<Add library="openal32" />
+					<Add library="flac" />
+					<Add library="vorbisenc" />
+					<Add library="vorbisfile" />
+					<Add library="vorbis" />
+					<Add library="ogg" />
 					<Add library="opengl32" />
 					<Add library="freetype" />
 					<Add library="winmm" />

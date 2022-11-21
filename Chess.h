@@ -1,6 +1,7 @@
 #ifndef CHESS_H_INCLUDED
 #define CHESS_H_INCLUDED
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <list>
 #include <assert.h>
 #include <iostream>
@@ -9,6 +10,7 @@
 
 using namespace std;
 using namespace sf;
+
 //Estructura del Ajedrez
 struct Chess{
     // Carga strings estaticos constantes para colocar las direcciones de las texturas de tablero y piezas
@@ -31,6 +33,16 @@ struct ChessImageException : public exception {
 struct PieceTypeException : public exception{
     const char* what() throw() {
         return "The piece type isn't valid";
+        sf::SoundBuffer buffer;
+        sf::Sound sonido;
+
+        if(!buffer.loadFromFile("PieceTypeExc.ogg")){
+           cout << "Error " << endl;
+        }
+
+        sonido.setBuffer(buffer);
+        sonido.setVolume(50);
+        sonido.play();
     }
 };
 

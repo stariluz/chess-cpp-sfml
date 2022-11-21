@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Chess.h"
 #include <iostream>
 #include <thread>
@@ -12,12 +13,16 @@ const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png
 const int ChessCoord::SIZE=100; /// Constante para la unidad en pixeles
 const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FILENAME); /// Abrir el spritesheet de piezas
 
-
 /// Definición de protocolos
 void initPieces(ChessPiece**&, ChessPiece**& );
 
 int main()
 {
+    sf::Music music;
+    if (!music.openFromFile("BackgroundMusic.ogg"))
+        return EXIT_FAILURE;
+
+    music.play();
     //Configuracion de la ventana del juego
     RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
     //Inisializacion de las piezas blancas y negras
