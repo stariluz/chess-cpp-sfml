@@ -15,9 +15,10 @@ const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FIL
 
 /// Definición de protocolos
 void initPieces(ChessPiece**&, ChessPiece**& );
-
+void MENU();
 int main()
 {
+    MENU();
     sf::Music music;
     if (!music.openFromFile("BackgroundMusic.ogg"))
         return EXIT_FAILURE;
@@ -109,5 +110,38 @@ void initPieces(ChessPiece**& whitePieces, ChessPiece**& blackPieces) {
         blackPieces[i]=ChessPiece::createPiece(
             ChessCoord(i + 1, 2), i, 1
         );
+    }
+}
+//Menu
+//struct button{
+//    RectangleShape button;
+//    Text text;
+//    button(){
+//    }
+//    button(string t, vector2f size, Color bgcolor, Color textcolor){
+//        text.setString(t);
+//        botton
+//    }
+//};
+void MENU(){
+    RenderWindow window(VideoMode(900, 800), "Pantalla_Inicial");
+    Texture texture;
+    if (!texture.loadFromFile("./assets/chess-game.jpg"))
+        {
+            exit(1);
+        }
+    Sprite sprite;
+    sprite.setTexture(texture);
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        window.clear();
+        window.draw(sprite);
+        window.display();
     }
 }

@@ -55,7 +55,7 @@ struct PieceColorException : public exception{
 //Metodo para cargar las texturas
 static Texture loadResource(string filename){
     Texture texture;
-    cout << filename<<"\n";
+    cout <<filename<<"\n";
     if(!texture.loadFromFile(filename)){
         cout<<"IMAGE WAS NOT LOADED.";
         throw ChessImageException();
