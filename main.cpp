@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Chess.h"
 #include <iostream>
 #include <thread>
@@ -12,12 +13,17 @@ const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png
 const int ChessCoord::SIZE=100; /// Constante para la unidad en pixeles
 const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FILENAME); /// Abrir el spritesheet de piezas
 
-
 /// Definición de protocolos
 void initPieces(ChessPiece**&, ChessPiece**& );
-
+void MENU();
 int main()
 {
+    MENU();
+    sf::Music music;
+    if (!music.openFromFile("./assets/sounds/BackgroundMusic.ogg"))
+        return EXIT_FAILURE;
+
+    music.play();
     //Configuracion de la ventana del juego
     RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
     //Inisializacion de las piezas blancas y negras
@@ -105,5 +111,38 @@ void initPieces(ChessPiece**& whitePieces, ChessPiece**& blackPieces) {
         blackPieces[i]=ChessPiece::createPiece(
             ChessCoord(i + 1, 2), i, 1
         );
+    }
+}
+//Menu
+//struct button{
+//    RectangleShape button;
+//    Text text;
+//    button(){
+//    }
+//    button(string t, vector2f size, Color bgcolor, Color textcolor){
+//        text.setString(t);
+//        botton
+//    }
+//};
+void MENU(){
+    RenderWindow window(VideoMode(900, 800), "Pantalla_Inicial");
+    Texture texture;
+    if (!texture.loadFromFile("./assets/chess-game.jpg"))
+        {
+            exit(1);
+        }
+    Sprite sprite;
+    sprite.setTexture(texture);
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        window.clear();
+        window.draw(sprite);
+        window.display();
     }
 }
