@@ -20,7 +20,7 @@ int main()
 {
     MENU();
     sf::Music music;
-    if (!music.openFromFile("BackgroundMusic.ogg"))
+    if (!music.openFromFile("./assets/sounds/BackgroundMusic.ogg"))
         return EXIT_FAILURE;
 
     music.play();
