@@ -24,6 +24,7 @@ int main()
         return EXIT_FAILURE;
 
     music.play();
+    music.setLoop(true);
     //Configuracion de la ventana del juego
     RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
     //Inisializacion de las piezas blancas y negras
@@ -56,6 +57,7 @@ int main()
         {
             if (event.type == Event::Closed)
             {
+                music.pause();
                 window.close();
             }
             else if (event.type == Event::MouseButtonPressed)
@@ -127,6 +129,12 @@ void initPieces(ChessPiece**& whitePieces, ChessPiece**& blackPieces) {
 void MENU(){
     RenderWindow window(VideoMode(900, 800), "Pantalla_Inicial");
     Texture texture;
+    sf::Music musica;
+    if (!musica.openFromFile("./assets/sounds/MenuMusic.ogg"))
+        exit(1);
+
+    musica.play();
+    musica.setLoop(true);
     if (!texture.loadFromFile("./assets/chess-game.jpg"))
         {
             exit(1);
