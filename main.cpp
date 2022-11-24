@@ -1,55 +1,73 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Chess.h"
+#include "ChessScreens.h"
 #include <iostream>
 #include <thread>
 
 using namespace std;
 using namespace sf;
 
-/// INICIALIZAR DATOS DEL HEADER "CHESS:H"
-const string Chess::BOARD_SPRITESHEET_FILENAME="./assets/chess_board.jpg"; /// Constante para la ubicación de la imagen del tablero
-const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png"; /// Constante para la ubicación del spritesheet de piezas
-const int ChessCoord::SIZE=100; /// Constante para la unidad en pixeles
-const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FILENAME); /// Abrir el spritesheet de piezas
+///// INICIALIZAR DATOS DEL HEADER "CHESS:H"
+//const string Chess::BOARD_SPRITESHEET_FILENAME="./assets/chess_board.jpg"; /// Constante para la ubicación de la imagen del tablero
+//const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png"; /// Constante para la ubicación del spritesheet de piezas
+//const int ChessCoord::SIZE=100; /// Constante para la unidad en pixeles
+//const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FILENAME); /// Abrir el spritesheet de piezas
 
 /// Definición de protocolos
-void initPieces(ChessPiece**&, ChessPiece**& );
+//void initPieces(ChessPiece**&, ChessPiece**& );
 
 int main()
 {
-    sf::Music music;
+    //Configuracion de la ventana del juego
+    RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
+
+//    vector<ChessScreen*> screens;
+//    screens.push_back(new ChessMenuScreen()); // 0
+//    screens.push_back(new ChessGameScreen()); // 1
+//    int screenNumber=0;
+//
+//    while(screenNumber>=0){
+//        screenNumber=screens[screenNumber]->Run(window);
+//    }
+//
+//    return -1;
+
+    Music music;
     if (!music.openFromFile("BackgroundMusic.ogg"))
         return EXIT_FAILURE;
 
     music.play();
-    //Configuracion de la ventana del juego
-    RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
-    //Inisializacion de las piezas blancas y negras
+
+    // Reserva de espacio para piezas blancas y negras
     ChessPiece** whitePieces = new ChessPiece*[8];
     ChessPiece** blackPieces = new ChessPiece*[8];
-    //Inicializacion del tablero del juego
+
+    // Inicializacion del tablero del juego
     ChessBoard board;
 
-    //Inicializamos un contador
+    //Inicializacion de un contador
     Game_Timer s;
     sf::Thread timer_thread(s);
     timer_thread.launch();
 
     //TODO: Crear una variable para establecer el tiempo actual y el limite de tiempo
 
-    //Metodo initPieces para las piezas blancas y negras
-    initPieces(whitePieces, blackPieces);
+    // Cargar posiciones iniciales de las piezas
+//    initPieces(whitePieces, blackPieces);
+
+    //Eventos
+    Event event;
+
+    while (window.isOpen())
+    {
     /*
         Bucle principal del juego
         Aqui se manejan los eventos de la ventana
         Eventos del juego como los clicks
         Y el dibujado de la pantalla
     */
-    while (window.isOpen())
-    {
-        //Eventos
-        Event event;
+
         while (window.pollEvent(event))
         {
             if (event.type == Event::Closed)
@@ -68,11 +86,15 @@ int main()
                 ChessGame::dragPiece(event.mouseMove.x, event.mouseMove.y);
             }
         }
-        //Seccion de dibujado de la pantalla
+
+        /// Seccion de dibujado de la pantalla --------->
+
+
         window.clear();
-            /*
-                +Aqui se puede introducir cualquier cosa que se quiera dibujar
-            */
+
+        /*
+            Aqui se puede introducir cualquier cosa que se quiera dibujar
+        */
 
 
 
@@ -82,6 +104,7 @@ int main()
             window.draw((*whitePieces[i]).sprite);
             window.draw((*blackPieces[i]).sprite);
         }
+
         //Dibujo del reloj
             /*
                 Nota: Este segmento se puede comentar si no se encuentra en uso
@@ -95,6 +118,8 @@ int main()
             s.hand_timer_sprite.setRotation(1);
             window.draw(s.hand_timer_sprite);
         }
+
+        /// <--------- Final de la seccion de dibujo
         window.display();
     }
     return 0;
