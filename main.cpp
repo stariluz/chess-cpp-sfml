@@ -27,8 +27,9 @@ int main()
     ChessBoard board;
 
     //Inicializamos un contador
-    Game_Timer s;
-    sf::Thread timer_thread(s);
+    int current_time = 0;
+    Game_Timer s(current_time);
+    sf::Thread timer_thread(ref(s));
     timer_thread.launch();
 
     //TODO: Crear una variable para establecer el tiempo actual y el limite de tiempo
@@ -87,7 +88,7 @@ int main()
             window.draw(s.clock_sprite);
             s.hand_timer_sprite.setOrigin(sf::Vector2f(50,50));
             s.hand_timer_sprite.setPosition(sf::Vector2f(50,50));
-            s.hand_timer_sprite.setRotation(1);
+            s.hand_timer_sprite.setRotation(s.degrees*s.current_time);
             window.draw(s.hand_timer_sprite);
         }
         window.display();
