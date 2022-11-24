@@ -55,7 +55,7 @@ struct PieceColorException : public exception{
 //Metodo para cargar las texturas
 static Texture loadResource(string filename){
     Texture texture;
-    cout << filename<<"\n";
+    cout <<filename<<"\n";
     if(!texture.loadFromFile(filename)){
         cout<<"IMAGE WAS NOT LOADED.";
         throw ChessImageException();
@@ -520,11 +520,22 @@ struct Game_Timer
     //A
     bool eneable;
     int seconds, minuts,limit_seconds,limit_minuts;
+    int current_time;
+    int limit_time;
+
+    float degrees;
+
 /*Constructores*/
     Game_Timer()
     {
         eneable = false;
         init_Timer();
+    }
+    Game_Timer(int &current_time_external)
+    {
+        eneable = false;
+        init_Timer();
+        current_time = current_time_external;
     }
 
 /*Metodos del Timer*/
@@ -543,6 +554,9 @@ struct Game_Timer
         limit_seconds = 0;
         limit_minuts = 0;
 
+        limit_time=0;
+
+        degrees = 0;
         on_timer();
     }
 
@@ -555,6 +569,9 @@ struct Game_Timer
 
         setMinutsLimit(1);
         setSecondsLimit(0);
+
+        limit_time = convert_Time_Limit();
+        degrees = 360/limit_time;
 
         run();
     }
@@ -570,11 +587,8 @@ struct Game_Timer
     //En este metodo se ejecuta todas las acciones del timer
     void run ()
     {
-
-        int limit_time = convert_Time_Limit();
         cout<<"Limite de tiempo:"<<limit_time<<endl;
-
-        int current_time = 0;
+        cout<<degrees<<endl;
 
         while(limit_time>current_time){
             if(eneable==true)

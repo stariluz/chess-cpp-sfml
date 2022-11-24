@@ -70,6 +70,8 @@
 		</Linker>
 		<Unit filename="Chess.h" />
 		<Unit filename="ChessScreens.h" />
+		<Unit filename="assets/Manecilla.png" />
+		<Unit filename="assets/Marco_reloj.png" />
 		<Unit filename="assets/chess_board.jpg" />
 		<Unit filename="assets/chess_board_flat.jpg" />
 		<Unit filename="assets/pieces_spritesheet.png" />

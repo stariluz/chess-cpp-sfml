@@ -9,32 +9,34 @@ using namespace std;
 using namespace sf;
 
 ///// INICIALIZAR DATOS DEL HEADER "CHESS:H"
-//const string Chess::BOARD_SPRITESHEET_FILENAME="./assets/chess_board.jpg"; /// Constante para la ubicación de la imagen del tablero
-//const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png"; /// Constante para la ubicación del spritesheet de piezas
+//const string Chess::BOARD_SPRITESHEET_FILENAME="./assets/chess_board.jpg"; /// Constante para la ubicaciï¿½n de la imagen del tablero
+//const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png"; /// Constante para la ubicaciï¿½n del spritesheet de piezas
 //const int ChessCoord::SIZE=100; /// Constante para la unidad en pixeles
 //const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FILENAME); /// Abrir el spritesheet de piezas
 
-/// Definición de protocolos
+/// Definiciï¿½n de protocolos
 //void initPieces(ChessPiece**&, ChessPiece**& );
+void MENU();
 
 int main()
 {
+    MENU();
     //Configuracion de la ventana del juego
     RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
 
-//    vector<ChessScreen*> screens;
-//    screens.push_back(new ChessMenuScreen()); // 0
-//    screens.push_back(new ChessGameScreen()); // 1
-//    int screenNumber=0;
-//
-//    while(screenNumber>=0){
-//        screenNumber=screens[screenNumber]->Run(window);
-//    }
-//
-//    return -1;
+    vector<ChessScreen*> screens;
+    screens.push_back(new ChessMenuScreen()); // 0
+    screens.push_back(new ChessGameScreen()); // 1
+    int screenNumber=0;
+
+    while(screenNumber>=0){
+        screenNumber=screens[screenNumber]->Run(window);
+    }
+
+    return -1;
 
     Music music;
-    if (!music.openFromFile("BackgroundMusic.ogg"))
+    if (!music.openFromFile("./assets/sounds/BackgroundMusic.ogg"))
         return EXIT_FAILURE;
 
     music.play();
@@ -46,9 +48,10 @@ int main()
     // Inicializacion del tablero del juego
     ChessBoard board;
 
-    //Inicializacion de un contador
-    Game_Timer s;
-    sf::Thread timer_thread(s);
+    //Inicializamos un contador
+    int current_time = 0;
+    Game_Timer s(current_time);
+    sf::Thread timer_thread(ref(s));
     timer_thread.launch();
 
     //TODO: Crear una variable para establecer el tiempo actual y el limite de tiempo
@@ -115,7 +118,7 @@ int main()
             window.draw(s.clock_sprite);
             s.hand_timer_sprite.setOrigin(sf::Vector2f(50,50));
             s.hand_timer_sprite.setPosition(sf::Vector2f(50,50));
-            s.hand_timer_sprite.setRotation(1);
+            s.hand_timer_sprite.setRotation(s.degrees*s.current_time);
             window.draw(s.hand_timer_sprite);
         }
 
@@ -134,5 +137,38 @@ void initPieces(ChessPiece**& whitePieces, ChessPiece**& blackPieces) {
         blackPieces[i]=ChessPiece::createPiece(
             ChessCoord(i + 1, 2), i, 1
         );
+    }
+}
+//Menu
+//struct button{
+//    RectangleShape button;
+//    Text text;
+//    button(){
+//    }
+//    button(string t, vector2f size, Color bgcolor, Color textcolor){
+//        text.setString(t);
+//        botton
+//    }
+//};
+void MENU(){
+    RenderWindow window(VideoMode(900, 800), "Pantalla_Inicial");
+    Texture texture;
+    if (!texture.loadFromFile("./assets/chess-game.jpg"))
+        {
+            exit(1);
+        }
+    Sprite sprite;
+    sprite.setTexture(texture);
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+        window.clear();
+        window.draw(sprite);
+        window.display();
     }
 }
