@@ -539,5 +539,4 @@ struct Game_Timer
         return os;
     }
 };
-
 #endif // CHESS_H_INCLUDED

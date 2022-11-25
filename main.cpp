@@ -23,14 +23,14 @@ const int ChessCoord::SIZE=100;
 const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FILENAME);
 
 //Variables estaticas para el tamaño de la ventana
-static const int WINDOW_HORIZONTAL_SIZE=ChessCoord::SIZE*8;
+static const int WINDOW_HORIZONTAL_SIZE=1067;
 
 //Variables estaticas para el tamaño de la ventana
 static const int WINDOW_VERTICAL_SIZE=ChessCoord::SIZE*8;
 
 int main()
 {
-    
+
     // music.setLoop(true);
     //Configuracion de la ventana del juego
     RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
@@ -45,17 +45,6 @@ int main()
     }
     return 0;
 }
-
-//struct button{
-//    RectangleShape button;
-//    Text text;
-//    button(){
-//    }
-//    button(string t, vector2f size, Color bgcolor, Color textcolor){
-//        text.setString(t);
-//        botton
-//    }
-//};
 
     // sf::Music musica;
     // if (!musica.openFromFile("./assets/sounds/MenuMusic.ogg"))
