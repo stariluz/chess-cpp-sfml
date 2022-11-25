@@ -30,6 +30,8 @@ static const int WINDOW_VERTICAL_SIZE=ChessCoord::SIZE*8;
 
 int main()
 {
+    
+    // music.setLoop(true);
     //Configuracion de la ventana del juego
     RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
 
@@ -54,3 +56,10 @@ int main()
 //        botton
 //    }
 //};
+
+    // sf::Music musica;
+    // if (!musica.openFromFile("./assets/sounds/MenuMusic.ogg"))
+    //     exit(1);
+
+    // musica.play();
+    // musica.setLoop(true);

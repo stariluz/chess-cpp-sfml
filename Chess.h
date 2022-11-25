@@ -28,6 +28,16 @@ static const string TIMER_HAND_FILE = "./assets/Manecilla.png";
 struct ChessImageException : public exception {
     const char* what() throw() {
         return "Couldn't load the resource";
+        sf::SoundBuffer buffer3;
+        sf::Sound sonido3;
+
+        if(!buffer3.loadFromFile("ChessImageExc.ogg")){
+           cout << "Error " << endl;
+        }
+
+        sonido3.setBuffer(buffer3);
+        sonido3.setVolume(50);
+        sonido3.play();
     }
 };
 
@@ -50,6 +60,16 @@ struct PieceTypeException : public exception{
 struct PieceColorException : public exception{
     const char* what() throw() {
         return "The color isn't valid";
+        sf::SoundBuffer buffer2;
+        sf::Sound sonido2;
+
+        if(!buffer2.loadFromFile("PieceColorExc.ogg")){
+           cout << "Error " << endl;
+        }
+
+        sonido2.setBuffer(buffer2);
+        sonido2.setVolume(50);
+        sonido2.play();
     }
 };
 
@@ -175,6 +195,8 @@ struct ChessPieceTypes{
             cout<<"Exception caught: " << e.what() << endl;
         }catch(PieceColorException& ee){
             cout<<"Exception caught: " << ee.what() << endl;
+        }catch(std::bad_alloc eee){
+            cout<<"ERROR: " << eee.what();
         }catch(...){
             cout<<"ERROR\n";
         }
