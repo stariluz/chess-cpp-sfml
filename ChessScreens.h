@@ -1,15 +1,15 @@
 #ifndef CHESSSCREENS_H_INCLUDED
 #define CHESSSCREENS_H_INCLUDED
-#include "Chess.h"
 
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include "Chess.h"
+#include "ChessScreens.h"
+#include <iostream>
+#include <thread>
 using namespace std;
 using namespace sf;
 
-/// INICIALIZAR DATOS DEL HEADER "CHESS:H"
-const string Chess::BOARD_SPRITESHEET_FILENAME="./assets/chess_board.jpg"; /// Constante para la ubicación de la imagen del tablero
-const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png"; /// Constante para la ubicación del spritesheet de piezas
-const int ChessCoord::SIZE=100; /// Constante para la unidad en pixeles
-const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FILENAME); /// Abrir el spritesheet de piezas
 
 struct ChessScreen{
     virtual int Run(RenderWindow &window){
@@ -30,26 +30,31 @@ struct ChessGameScreen : public ChessScreen{
     ChessBoard board;
     Event event;
 
+    int current_time;
+    Game_Timer *s=NULL;
+    Thread *timer_thread=NULL;
+
     ChessGameScreen(){
-        if (!music.openFromFile("BackgroundMusic.ogg"))
+        if (!music.openFromFile("./assets/sounds/BackgroundMusic.ogg"))
             cout<<"ERROR";// TODO: exception image
 
+        // Reserva de espacio para piezas blancas y negras
         whitePieces = new ChessPiece*[8];
         blackPieces = new ChessPiece*[8];
-//
-//        // Reserva de espacio para piezas blancas y negras
-//        ChessPiece** whitePieces = new ChessPiece*[8];
-//        ChessPiece** blackPieces = new ChessPiece*[8];
 
         // Cargar posiciones iniciales de las piezas
         initPieces(whitePieces, blackPieces);
-        cout<<"SHEEEEEEEEESH";
 
+
+        //Inicializamos un contador
+        current_time=0;
+        s=new Game_Timer(current_time);
+        timer_thread=new Thread(ref(*s));
+        //TODO: Crear una variable para establecer el tiempo actual y el limite de tiempo
     }
 
     //Metodo para inicializar las piezas
     void initPieces(ChessPiece**& whitePieces, ChessPiece**& blackPieces) {
-        cout<<"WAKAWAKA E E";
         for (int i = 0; i < 6; i++) {
             whitePieces[i]=ChessPiece::createPiece(
                 ChessCoord(i + 1, 1), i, 0
@@ -57,18 +62,23 @@ struct ChessGameScreen : public ChessScreen{
             blackPieces[i]=ChessPiece::createPiece(
                 ChessCoord(i + 1, 2), i, 1
             );
-            cout<<"White Piece "<<whitePieces[i]<<"\n";
-            cout<<"Black Piece "<<blackPieces[i]<<"\n";
         }
     }
 
     virtual int Run(RenderWindow &window){
         bool running = true;
         music.play();
+
+        // Ejecutamos un thread con el timer
+        timer_thread->launch();
+
         while (running)
         {
         /*
-            Ciclo de vida de una partida
+            Bucle principal del juego
+            Aqui se manejan los eventos de la ventana
+            Eventos del juego como los clicks
+            Y el dibujado de la pantalla
         */
 
             while (window.pollEvent(event))
@@ -90,23 +100,30 @@ struct ChessGameScreen : public ChessScreen{
                 }
             }
 
-            /// Seccion de dibujado de la pantalla --------->
-
-
             window.clear();
 
+            /// Seccion de dibujo en la pantalla --------->
             /*
                 Aqui se puede introducir cualquier cosa que se quiera dibujar
             */
 
             window.draw(board.sprite);
             for (int i = 0; i < 6; i++) {
+
                 window.draw((*whitePieces[i]).sprite);
                 window.draw((*blackPieces[i]).sprite);
             }
 
-            /// <--------- Final de la seccion de dibujo
+            if(s->eneable == true)
+            {
+                window.draw(s->clock_sprite);
+                s->hand_timer_sprite.setOrigin(sf::Vector2f(50,50));
+                s->hand_timer_sprite.setPosition(sf::Vector2f(50,50));
+                s->hand_timer_sprite.setRotation(s->degrees*s->current_time);
+                window.draw(s->hand_timer_sprite);
+            }
 
+            /// <--------- Final de la seccion de dibujo
             window.display();
         }
         return -1;
@@ -115,55 +132,40 @@ struct ChessGameScreen : public ChessScreen{
 };
 
 struct ChessMenuScreen : public ChessScreen{
-    int windowHeight;
-    int windowWidth;
     virtual int Run(RenderWindow &window){
         bool running = true;
         Event event;
         Texture texture;
-        if(!texture.loadFromFile("./assets/Manecilla.png")){
-            return -1; /// TODO: exception image
-        }
-        Sprite sprite(texture);
-
-        while (running)
+        if (!texture.loadFromFile("./assets/chess-game.jpg"))
         {
-        /*
-            Ciclo de vida de una partida
-        */
-
-            //Eventos
+            exit(1); //TODO: add exception
+        }
+        Sprite sprite;
+        sprite.setTexture(texture);
+        while (window.isOpen())
+        {
+            sf::Event event;
             while (window.pollEvent(event))
             {
-                if (event.type == Event::Closed)
+                switch(event.type)
                 {
-                    window.close();
-                }
-                else if (event.type == Event::MouseButtonPressed)
-                {
-                    if (event.mouseButton.button == Mouse::Left)
-                    {
-                        cout<<"CLICK BUAJUAJUA\n";
-                        return 1;
-                    }
+                    case (Event::Closed):
+                        window.close();
+                        break;
+                    case (Event::MouseButtonPressed):
+                        if (event.mouseButton.button == Mouse::Left)
+                        {
+                            cout<<"CLICK BUAJUAJUA\n";
+                            return 1;
+                        }
+                        break;
+
                 }
             }
-
-            /// Seccion de dibujado de la pantalla --------->
-
-
             window.clear();
-
-            /*
-                Aqui se puede introducir cualquier cosa que se quiera dibujar
-            */
-
             window.draw(sprite);
-
-            /// <--------- Final de la seccion de dibujo
             window.display();
         }
-        return -1;
     }
 };
 

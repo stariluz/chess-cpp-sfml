@@ -1,5 +1,6 @@
 #ifndef CHESS_H_INCLUDED
 #define CHESS_H_INCLUDED
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <list>
@@ -22,7 +23,7 @@ static const string TIMER_FRAME_FILE = "./assets/Marco_reloj.png";
 static const string TIMER_HAND_FILE = "./assets/Manecilla.png";
 
 /*
-    Estructuras de las exepciones
+    Estructuras de las exepciones personalizadas
 */
 struct ChessImageException : public exception {
     const char* what() throw() {
@@ -55,9 +56,8 @@ struct PieceColorException : public exception{
 //Metodo para cargar las texturas
 static Texture loadResource(string filename){
     Texture texture;
-    cout <<filename<<"\n";
+    // DEV cout <<filename<<"\n";
     if(!texture.loadFromFile(filename)){
-        cout<<"IMAGE WAS NOT LOADED.";
         throw ChessImageException();
     }
     return texture;
@@ -157,7 +157,7 @@ struct ChessCoord {
     }
 };
 
-//Estructura de tipos de piezas
+// Estructura de tipos de piezas
 struct ChessPieceTypes{
     static const int K=0; // King
     static const int Q=1; // Queen
@@ -166,6 +166,8 @@ struct ChessPieceTypes{
     static const int T=4; // Tower
     static const int P=5; // Pawn
 
+
+    // Validar si la pieza es valida según el tipo y el color
     static IntRect getIntRectOfSpriteSheet(int pieceType, int color){
         try{
             validate(pieceType,color);
@@ -180,6 +182,8 @@ struct ChessPieceTypes{
         int colorPX=color*ChessCoord::SIZE;
         return IntRect(pieceTypePX, colorPX, ChessCoord::SIZE, ChessCoord::SIZE);
     }
+
+    // Validar si la pieza es valida según el tipo y el color
     static void validate(int pieceType, int color){
         if(pieceType<0||pieceType>= 6){
             throw PieceTypeException();
@@ -193,25 +197,23 @@ struct ChessPieceTypes{
 //Estructura de piezas, importante para la creacion y el manejo de cada una
 struct ChessPiece
 {
-    ///////// STATICS
+    /* Atributos estáticos de piezas */
     static const Texture spriteSheet;
     static int numberOfPieces;
-    /////// STATIC METHODS
+
+    /* Metodos estáticos de piezas */
     static ChessPiece* createPiece(ChessCoord _position, int pieceType, int color);
     static void operator delete(void *ptr) {
         numberOfPieces--;
         ::operator delete(ptr);
     }
-    //////////////////////
 
-
-    ///////// ATTRIBUTES
+    /* Atributos de piezas*/
     ChessCoord position;
     Sprite sprite;
     int pieceType;
-    //////////////////////
 
-    ///////// CONSTRUCTORS
+    /* Constructores de piezas */
     ChessPiece()
     {
         cout<<this<<"\n";
@@ -230,7 +232,6 @@ struct ChessPiece
         setPosition(_position);
         setSprite(sprite);
     }
-    //////////////////////
 
     ////////////// METHODS
     void setPosition(ChessCoord _position)
@@ -255,10 +256,12 @@ struct ChessPiece
         os << piece.pieceType<<"("<<piece.position<<")";
         return os;
     }
-    //////////////////////
 };
+
+// Inicializar el contador de piezas a 0
 int ChessPiece::numberOfPieces=0;
-/*Estructuras dedicadas a cada tipo de pieza*/
+
+/* Estructura de peón */
 struct Pawn : public ChessPiece
 {
     char icon = 'P';
@@ -278,112 +281,16 @@ struct Pawn : public ChessPiece
     }
 };
 
-struct Tower : public ChessPiece
-{
-    char icon = 'T';
-    Tower ()
-    {
-        position = ChessCoord(1, 1);
-    }
-    Tower(ChessCoord position, int color)
-    {
-        this->position = position;
-        setSprite(ChessPieceTypes::T, color);
-    }
-    Tower(ChessCoord position, Sprite sprite)
-    {
-        this->position = position;
-        setSprite(sprite);
-    }
-};
-
-struct Horse : public ChessPiece
-{
-    char icon = 'H';
-    Horse ()
-    {
-        position = ChessCoord(1, 1);
-    }
-    Horse(ChessCoord position, int color)
-    {
-        this->position = position;
-        setSprite(ChessPieceTypes::H, color);
-    }
-    Horse(ChessCoord position, Sprite sprite)
-    {
-        this->position = position;
-        setSprite(sprite);
-    }
-};
-
-struct Bishop : public ChessPiece
-{
-    char icon = 'B';
-    Bishop ()
-    {
-        position = ChessCoord(1, 1);
-    }
-    Bishop(ChessCoord position, int color)
-    {
-        this->position = position;
-        setSprite(ChessPieceTypes::B, color);
-    }
-    Bishop(ChessCoord position, Sprite sprite)
-    {
-        this->position = position;
-        setSprite(sprite);
-    }
-};
-
-struct Queen : public ChessPiece
-{
-    char icon = 'Q';
-    Queen ()
-    {
-        position = ChessCoord(1, 1);
-    }
-    Queen(ChessCoord position, int color)
-    {
-        this->position = position;
-        setSprite(ChessPieceTypes::Q, color);
-    }
-    Queen(ChessCoord position, Sprite sprite)
-    {
-        this->position = position;
-        setSprite(sprite);
-    }
-};
-
-struct King : public ChessPiece
-{
-    char icon = 'K';
-    King ()
-    {
-        position = ChessCoord(1, 1);
-    }
-    King(ChessCoord position, int color)
-    {
-        this->position = position;
-        setSprite(ChessPieceTypes::K, color);
-    }
-    King(ChessCoord position, Sprite sprite)
-    {
-        this->position = position;
-        setSprite(sprite);
-    }
-};
-
-//Estructura del tablero
+// Estructura del tablero
 struct ChessBoard
 {
-    /* Atributos */
+    /* Atributos del tablero*/
     static list<ChessPiece*> piecesOnBoard;
     Sprite sprite;
     Texture texture;
     string imageFilename;
-    char empty_icon = ' ';//  Caracter vacio para los espacios vacios en el tablero
-    char** matrix_board; //  Matriz del tablero
 
+    /* Constructores del tablero*/
     ChessBoard() {
         setBoardImage(Chess::BOARD_SPRITESHEET_FILENAME);
     }
@@ -391,21 +298,23 @@ struct ChessBoard
         setBoardImage(imageFilename);
     }
 
+    /// Cargar la imagen del tablero
     void setBoardImage(string boardImageFilename){
         try{
             this->texture=loadResource(boardImageFilename);
             this->imageFilename = boardImageFilename;
             sprite = Sprite(texture);
         }catch(...){
-            /// DEV TODO: Add exception of image
+            /// TODO: Add exception of image
             cout<<"FATAL ERROR";
-            getchar();
             exit(0);
         }
     }
+
+    // Obtener la pieza en una posición a partir de los pixeles recibidos
     static ChessPiece* getPieceAtPosition(int pxX, int pxY){
         ChessCoord coord=ChessCoord::getChessPosition(pxX,pxY);
-        // DEV_COMMENT //cout<<"COORD_PX: "<<pxX<<","<<pxY<<"\nCOORD: "<<coord<<"\n";
+        // DEV_COMMENT cout<<"COORD_PX: "<<pxX<<","<<pxY<<"\nCOORD: "<<coord<<"\n";
         for(list<ChessPiece*>::iterator piece=ChessBoard::piecesOnBoard.begin(); piece!=ChessBoard::piecesOnBoard.end(); piece++){
             if((*piece)->position==coord){
                     cout<<**piece<<" ";
@@ -414,52 +323,12 @@ struct ChessBoard
         }
         return NULL;
     }
-
-
-    /* Metodos del tablero */
-    //  Este metodo inicializa la matirz del tablero, apartando espacio en la memoria
-    void init_board()
-    {
-        matrix_board = new char* [8];
-        for (int i = 0; i < 8; i++)
-        {
-            matrix_board[i] = new char[8];
-            for (int j = 0; j < 8; j++)
-            {
-                matrix_board[i][j] = empty_icon;
-            }
-        }
-    }
-    void end_board() {
-        for (int i = 0; i < 8; i++)
-        {
-            delete matrix_board[i];
-        }
-
-    }
-
-    // Este metodo imprime el tablero en consola
-    void print_board()
-    {
-        string string_board;
-        for (int i = 0; i < 8; i++)
-        {
-            //Produce una cadena vacia
-            string_board = "";
-            //Coloca todos los caracteres de las filas del tablero
-            for (int j = 0; j < 8; j++)
-            {
-                string_board += matrix_board[i][j];
-                string_board += " ";
-            }
-            //imprimer la primera fila
-            cout << string_board << endl;
-        }
-    }
 };
-//??
+
+// Inicialización de lista de apuntadores a Piezas, que guardará una lista con todas las piezas en juego.
 list<ChessPiece*> ChessBoard::piecesOnBoard=list<ChessPiece*>();
-//Aqui se implementa el metodo Crear piezas, que se encuentra dentro de ChessPiece en forma de un metodo estatico
+
+// Implementación del metodo estático para crear piezas, que se encuentra dentro de ChessPiece
 ChessPiece* ChessPiece::createPiece(ChessCoord _position, int pieceType, int color){
     ChessPiece *newPiece=new ChessPiece(_position, pieceType, color);
     numberOfPieces++;
@@ -469,11 +338,13 @@ ChessPiece* ChessPiece::createPiece(ChessCoord _position, int pieceType, int col
 
 /*
     Estructura del juego, maneja la seleccion de piezas y las mecanicas de seleccion
-        incluye el metodo de desplazamiento de pieza
+    incluye el metodo de desplazamiento de pieza
 */
 struct ChessGame{
     static string status;
     static ChessPiece* selectedPiece;
+
+    // Detectar donde ocurrió el click y actuar según qué se clickeo
     static void onClick(int x, int y){
         cout << "\nButton pressed" << endl;
         cout << "mouse x: " << x << endl;
@@ -493,26 +364,26 @@ struct ChessGame{
             }
         }
     }
+
+    // Posiciona la pieza sobre la casilla de ajedrez en la que se encuentran los pixeles recibidos.
     static void dragPiece(int pxX, int pxY){
         if(!selectedPiece)return;
-        //cout<<*selectedPiece<<"\n";
         selectedPiece->setPosition(ChessCoord::getChessPosition(pxX, pxY));
     }
 };
-//un string que se usa para declarar el tipo de estado de ideal en el que no se encuentra seleccionada ninguna pieza
+
+// Estado inicial de el juego, nada está pasando así que es iddle
 string ChessGame::status="iddle";
-//Establece en ChessGame la pieza selecionada como nula
+
+// Inicializa en ChessGame la pieza selecionada como nula
 ChessPiece* ChessGame::selectedPiece=NULL;
-//Variables estaticas para el tamaño de la ventana
-static const int WINDOW_HORIZONTAL_SIZE=ChessCoord::SIZE*8;
-static const int WINDOW_VERTICAL_SIZE=ChessCoord::SIZE*8;
 
 /*
     Esta estructura llevara el manejo del reloj del juego
 */
 struct Game_Timer
 {
-/*Atributos del Timer*/
+    /*Atributos del Timer*/
     // Variables con rutas de la imagen del Timer
     Texture clock_texture, hand_timer_texture;
     Sprite clock_sprite,hand_timer_sprite;
@@ -525,7 +396,7 @@ struct Game_Timer
 
     float degrees;
 
-/*Constructores*/
+    /* Constructores */
     Game_Timer()
     {
         eneable = false;
@@ -538,7 +409,8 @@ struct Game_Timer
         current_time = current_time_external;
     }
 
-/*Metodos del Timer*/
+    /* Metodos del Timer*/
+
     //Inicializa los valores por defecto del Timer
     void init_Timer()
     {
@@ -575,6 +447,7 @@ struct Game_Timer
 
         run();
     }
+
     //Metodos de control para el Timer, si se ecnuentra ncendido o apagado
     void on_timer()
     {
@@ -584,6 +457,7 @@ struct Game_Timer
     {
         eneable = false;
     }
+
     //En este metodo se ejecuta todas las acciones del timer
     void run ()
     {
@@ -610,6 +484,7 @@ struct Game_Timer
         cout<<"Cambiando turno"<<endl;
         reset_Timer();
     }
+
     //Esta funcion convierte los limites de tiempo a una unidad unica para su manejo
     int convert_Time_Limit()
     {
@@ -617,6 +492,7 @@ struct Game_Timer
         sum = limit_seconds + (limit_minuts*60);
         return sum;
     }
+
     //Metodo para configurar los calores de segundos y minutos a su valor por defecto
     void reset_Timer()
     {
@@ -624,6 +500,7 @@ struct Game_Timer
         seconds = 0;
         minuts = 0;
     }
+
     //Metodos para configurar el limite de tiempo en minutos y segundos
     void setMinutsLimit(int new_minuts_limit){
         limit_minuts = new_minuts_limit;
@@ -632,6 +509,7 @@ struct Game_Timer
     void setSecondsLimit(int new_seconds_limit){
         limit_seconds = new_seconds_limit;
     }
+
     //Funcion amiga para el operador <<
     friend ostream& operator <<(ostream& os, Game_Timer& _game_timer)
     {
