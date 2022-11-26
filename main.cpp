@@ -28,6 +28,10 @@ static const int WINDOW_HORIZONTAL_SIZE=1067;
 //Variables estaticas para el tamaño de la ventana
 static const int WINDOW_VERTICAL_SIZE=ChessCoord::SIZE*8;
 
+// Asignación de el numero de las pantallas según el orden
+const int ChessMenuScreen::SCREEN_NUMBER=1;
+const int ChessGameScreen::SCREEN_NUMBER=2;
+
 int main()
 {
 
@@ -35,12 +39,13 @@ int main()
     RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
 
     vector<ChessScreen*> screens;
-    screens.push_back(new ChessMenuScreen()); // Screen no. 0
-    screens.push_back(new ChessGameScreen()); // Screen no. 1
-    int currentScreen=0;
-    int nextScreen=0;
+    screens.push_back(new ChessScreen()); // Empty screen, it doesn't do anything
+    screens.push_back(new ChessMenuScreen()); // Screen no. 1
+    screens.push_back(new ChessGameScreen()); // Screen no. 2
+    int currentScreen=1;
+    int nextScreen=currentScreen;
 
-    while(currentScreen>=0){
+    while(currentScreen>=1){
         nextScreen=screens[currentScreen]->Run(window);
         if(nextScreen!=currentScreen){
             screens[currentScreen]->Pause();

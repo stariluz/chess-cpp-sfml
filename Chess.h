@@ -310,6 +310,7 @@ struct ChessBoard
 {
     /* Atributos del tablero*/
     static list<ChessPiece*> piecesOnBoard;
+    static const IntRect LIMITS;
     Sprite sprite;
     Texture texture;
     string imageFilename;
@@ -369,24 +370,27 @@ struct ChessGame{
     static ChessPiece* selectedPiece;
 
     // Detectar donde ocurrió el click y actuar según qué se clickeo
-    static void onClick(int x, int y){
-        cout << "\nButton pressed" << endl;
-        cout << "mouse x: " << x << endl;
-        cout << "mouse y: " << y << endl;
+    static int onClick(int x, int y){
+        // DEV cout << "\nButton pressed" << endl;
+        // DEV cout << "mouse x: " << x << endl;
+        // DEV cout << "mouse y: " << y << endl;
         if(status=="iddle"||status=="selected"){
             selectedPiece=ChessBoard::getPieceAtPosition(x,y);
             if(selectedPiece&&status=="selected"){
                 status="iddle";
                 selectedPiece=NULL;
-                cout<<"NO SELECTED\n";
+                // cout<<"UNSELECTED\n";
+                return 2;
             }else if(selectedPiece){
                 status="selected";
-                cout<<"SELECTED: "<<*selectedPiece<<"\n";
+                // cout<<"SELECTED: "<<*selectedPiece<<"\n";
+                return 1;
             }else{
                 status="iddle";
-                cout<<"NO SELECTED\n";
+                // cout<<"NO SELECTED\n";
             }
         }
+        return 0;
     }
 
     // Posiciona la pieza sobre la casilla de ajedrez en la que se encuentran los pixeles recibidos.

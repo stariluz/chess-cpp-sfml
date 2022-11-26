@@ -11,9 +11,13 @@
 using namespace std;
 using namespace sf;
 
+const IntRect ChessBoard::LIMITS=IntRect(0, 0, ChessCoord::SIZE*8, ChessCoord::SIZE*8);
 
 struct ChessScreen{
+    static const int CLICK_ON_BUTTONS=1;
+    static const int CLICK_ON_NOTHING=0;
     bool wasRun=false;
+    static const int SCREEN_NUMBER;
     virtual int Run(RenderWindow &window){
         return 0;
     }
@@ -24,6 +28,7 @@ struct ChessScreen{
 };
 
 struct ChessGameScreen : public ChessScreen{
+    static const int SCREEN_NUMBER;
     Music music;
     int windowHeight;
     int windowWidth;
@@ -67,86 +72,36 @@ struct ChessGameScreen : public ChessScreen{
         }
     }
 
-    virtual int Run(RenderWindow &window){
-        if(!wasRun){
-            /*
-                Code to run when is the first run, and is needed to start some variables just one time
-            */
-            wasRun=true;
-            music.play();
-            music.setLoop(true);
-            // Ejecutamos un thread con el timer
-            timer_thread->launch();
-        }else{
-            /*
-                Code to run when the game was paused, and now, will to continue
-            */
-        }
-        bool running = true;
-
-        while (running)
-        {
-        /*
-            Bucle principal del juego
-            Aqui se manejan los eventos de la ventana
-            Eventos del juego como los clicks
-            Y el dibujado de la pantalla
-        */
-
-            while (window.pollEvent(event))
-            {
-                if (event.type == Event::Closed)
-                {
-                    window.close();
-                    exit(1);
-                }
-                else if (event.type == Event::MouseButtonPressed)
-                {
-                    return 0;
-                    if (event.mouseButton.button == Mouse::Left)
-                    {
-                        ChessGame::onClick(event.mouseButton.x, event.mouseButton.y);
-                    }
-                }
-                else if (event.type == Event::MouseMoved && ChessGame::status=="selected")
-                {
-                    ChessGame::dragPiece(event.mouseMove.x, event.mouseMove.y);
-                }
-            }
-
-            window.clear();
-
-            /// Seccion de dibujo en la pantalla --------->
-            /*
-                Aqui se puede introducir cualquier cosa que se quiera dibujar
-            */
-
-            window.draw(board.sprite);
-            for (int i = 0; i < 6; i++) {
-
-                window.draw((*whitePieces[i]).sprite);
-                window.draw((*blackPieces[i]).sprite);
-            }
-
-            if(s->eneable == true)
-            {
-                window.draw(s->clock_sprite);
-                s->hand_timer_sprite.setOrigin(sf::Vector2f(50,50));
-                s->hand_timer_sprite.setPosition(sf::Vector2f(50,50));
-                s->hand_timer_sprite.setRotation(s->degrees*s->current_time);
-                window.draw(s->hand_timer_sprite);
-            }
-
-            /// <--------- Final de la seccion de dibujo
-            window.display();
-        }
-        return -1;
-    }
+    virtual int Run(RenderWindow &window);
 
     virtual void Pause(){
         // cout<<"PAUSAAAAAAAAAAAAAAAAAAAA";
         music.pause();
         // timer_thread->wait();
+    }
+
+    static const int CLICK_ON_BOARD=2;
+    int onClick(Event::MouseButtonEvent mouse){
+        /**
+            Funcion que busca la acción realizada al dar click en la pantalla de juego
+
+            Códigos de regreso:
+            CLICK_ON_BUTTONS = 2;
+            CLICK_ON BOARD = 1 Usado cuando el click es en el tablero de juego
+            CLICK_ON_NOTHING = 0 Usado cuando no se cliqueó nada interactuable
+
+        */
+        if(ChessBoard::LIMITS.contains(mouse.x,mouse.y)){
+            if(!ChessGame::onClick(mouse.x, mouse.y)){
+                cout<<"AAAAAAAAAAAAAAAAAA";
+                return CLICK_ON_NOTHING;
+            }
+            cout<<"BBBBBBBBBBBBBBBBBB";
+            return CLICK_ON_BOARD;
+        }else{
+            cout<<"CCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
+            return CLICK_ON_NOTHING;
+        }
     }
 };
 
@@ -198,6 +153,7 @@ struct ChessMenu{
 };
 
 struct ChessMenuScreen : public ChessScreen{
+    static const int SCREEN_NUMBER;
     Music music;
     Event event;
     Texture texture;
@@ -233,7 +189,6 @@ struct ChessMenuScreen : public ChessScreen{
 
         while (window.isOpen())
         {
-            sf::Event event;
             while (window.pollEvent(event))
             {
                 switch(event.type)
@@ -245,7 +200,7 @@ struct ChessMenuScreen : public ChessScreen{
                         if (event.mouseButton.button == Mouse::Left)
                         {
                             cout<<"CLICK BUAJUAJUA\n";
-                            return 1;
+                            return ChessGameScreen::SCREEN_NUMBER;
                         }
                         break;
 
@@ -261,10 +216,86 @@ struct ChessMenuScreen : public ChessScreen{
     virtual void Pause(){
         music.pause();
     }
-
-//    void setOptionsOnWindow(RenderWindow& window){
-//
-//    }
 };
+
+
+    int ChessGameScreen::Run(RenderWindow &window){
+        if(!wasRun){
+            /*
+                Code to run when is the first run, and is needed to start some variables just one time
+            */
+            wasRun=true;
+            music.play();
+            music.setLoop(true);
+            // Ejecutamos un thread con el timer
+            timer_thread->launch();
+        }else{
+            /*
+                Code to run when the game was paused, and now, will to continue
+            */
+        }
+        bool running = true;
+
+        while (running)
+        {
+        /*
+            Bucle principal del juego
+            Aqui se manejan los eventos de la ventana
+            Eventos del juego como los clicks
+            Y el dibujado de la pantalla
+        */
+
+            while (window.pollEvent(event))
+            {
+                if (event.type == Event::Closed)
+                {
+                    window.close();
+                    exit(1);
+                }
+                else if (event.type == Event::MouseButtonPressed)
+                {
+//                    return 0;
+                    if (event.mouseButton.button == Mouse::Left)
+                    {
+                        int operation=onClick(event.mouseButton);
+                        if(operation==CLICK_ON_NOTHING){
+                            return ChessMenuScreen::SCREEN_NUMBER;
+                        }
+                    }
+                }
+                else if (event.type == Event::MouseMoved && ChessGame::status=="selected")
+                {
+                    ChessGame::dragPiece(event.mouseMove.x, event.mouseMove.y);
+                }
+            }
+
+            window.clear();
+
+            /// Seccion de dibujo en la pantalla --------->
+            /*
+                Aqui se puede introducir cualquier cosa que se quiera dibujar
+            */
+
+            window.draw(board.sprite);
+            for (int i = 0; i < 6; i++) {
+
+                window.draw((*whitePieces[i]).sprite);
+                window.draw((*blackPieces[i]).sprite);
+            }
+
+            if(s->eneable == true)
+            {
+                window.draw(s->clock_sprite);
+                s->hand_timer_sprite.setOrigin(sf::Vector2f(50,50));
+                s->hand_timer_sprite.setPosition(sf::Vector2f(50,50));
+                s->hand_timer_sprite.setRotation(s->degrees*s->current_time);
+                window.draw(s->hand_timer_sprite);
+            }
+
+            /// <--------- Final de la seccion de dibujo
+            window.display();
+        }
+        return -1;
+    }
 
 #endif // CHESSSCREENS_H_INCLUDED

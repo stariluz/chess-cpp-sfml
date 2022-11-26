@@ -1,5 +1,5 @@
 # Compilation files
-/bin
-/obj
+/bin/*
+/obj/*
 ChessGame.layout
 ChessGame.depend
