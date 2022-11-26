@@ -149,7 +149,14 @@ struct ChessGameScreen : public ChessScreen{
         // timer_thread->wait();
     }
 };
-
+struct botton{
+    RectangleShape r;
+    string name;
+    boton(string identidad, RectangleShape rect){
+        name=identidad;
+        r= rect;
+    }
+};
 struct ChessMenu{
     Font* fuente;
     Text* txt_editor=NULL;
@@ -163,52 +170,63 @@ struct ChessMenu{
         option = new RectangleShape[4];
         txt_editor = new Text[4];
         for (int i= 0; i<4; i++){
-            option[i]= RectangleShape({100,50});
-            option[i].setFillColor(Color::Black);
             txt_editor[i]= Text("", *fuente);
-            txt_editor[i].setCharacterSize(50);
-            txt_editor[i].setColor(Color::White);
         }
-        txt_editor[0].setPosition({139,471});
-        txt_editor[1].setPosition({219,471});
-        txt_editor[2].setPosition({120,211});
-        txt_editor[3].setPosition({100,1000});
+        option[0]= RectangleShape({300,60});
+        option[1]= RectangleShape({300,60});
+        option[2]= RectangleShape({250,70});
+        option[3]= RectangleShape({160,50});
+
+        option[0].setFillColor(Color::Black);
+        option[1].setFillColor(Color::Black);
+        option[2].setFillColor(Color::White);
+        option[3].setFillColor(Color::Red);
+
+        option[0].setPosition({100,375});
+        option[1].setPosition({100,445});
+        option[2].setPosition({180,590});
+        option[3].setPosition({890,700});
+
+        txt_editor[0].setColor(Color::White);
+        txt_editor[1].setColor(Color::White);
+        txt_editor[2].setColor(Color::Black);
+        txt_editor[3].setColor(Color::White);
+
+        txt_editor[0].setCharacterSize(50);
+        txt_editor[1].setCharacterSize(50);
+        txt_editor[2].setCharacterSize(100);
+        txt_editor[3].setCharacterSize(55);
+
+        txt_editor[0].setPosition({120,360});
+        txt_editor[1].setPosition({120,430});
+        txt_editor[2].setPosition({213,545});
+        txt_editor[3].setPosition({917,683});
 
         txt_editor[0].setString("No. de peones");
         txt_editor[1].setString("Tiempo por turno");
         txt_editor[2].setString("JUGAR");
         txt_editor[3].setString("Salir");
 
-        option[0].setPosition({130,470});
-        option[1].setPosition({215,470});
-        option[2].setPosition({130,210});
-        option[3].setPosition({215,1150});
     }
     void renderMenu(RenderWindow &window){
-        // window->clear();
         for (int i= 0; i<4; i++){
             window.draw(option[i]);
             window.draw(txt_editor[i]);
         }
-//        if(window.hasFocus()){
-//            Cursor..renderizar(*window);
-//        }
-//        window->display();
     }
 };
-
 struct ChessMenuScreen : public ChessScreen{
     Music music;
     Event event;
     Texture texture;
     Sprite sprite;
     ChessMenu menu;
-
+    list<botton> option;
     ChessMenuScreen(){
         if (!music.openFromFile("./assets/sounds/MenuMusic.ogg")){
             exit(1);
         }
-        if (!texture.loadFromFile("./assets/chess_game1.png"))
+        if (!texture.loadFromFile("./assets/chess_game2.png"))
         {
             exit(1); //TODO: add exception
         }
@@ -244,8 +262,26 @@ struct ChessMenuScreen : public ChessScreen{
                     case (Event::MouseButtonPressed):
                         if (event.mouseButton.button == Mouse::Left)
                         {
-                            cout<<"CLICK BUAJUAJUA\n";
+                            cout<<"Click";
                             return 1;
+//                            vector2i posicion_mouse;
+//                            posicion_mouse=Mouse::getPosition(window);
+//                            for (int i= 0; i<4; i++){
+//                                if (option[i]->getGlobalBounds().contains(posicion_mouse.x, posicion_mouse.y)){
+//                                    switch(i){
+//                                        case 0:
+//
+//                                        case 1:
+//
+//                                        case 2:
+//
+//                                        case 3:
+//
+//                                        case 4:
+//                                            exit(1);
+//                                    }
+//                                }
+//                            }
                         }
                         break;
 
@@ -261,10 +297,6 @@ struct ChessMenuScreen : public ChessScreen{
     virtual void Pause(){
         music.pause();
     }
-
-//    void setOptionsOnWindow(RenderWindow& window){
-//
-//    }
 };
 
 #endif // CHESSSCREENS_H_INCLUDED
