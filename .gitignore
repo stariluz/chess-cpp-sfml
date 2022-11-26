@@ -1,5 +1,7 @@
 # Compilation files
+
 bin/
 obj/
+
 ChessGame.layout
 ChessGame.depend
