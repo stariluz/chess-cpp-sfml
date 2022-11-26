@@ -150,16 +150,69 @@ struct ChessGameScreen : public ChessScreen{
     }
 };
 
+struct ChessMenu{
+    Font* fuente;
+    Text* txt_editor=NULL;
+    RectangleShape* option=NULL;
+    RenderWindow* window;
+    RectangleShape button;
+    string name;
+    ChessMenu(){
+        fuente= new Font();
+        fuente->loadFromFile("./assets/Fuente.ttf");
+        option = new RectangleShape[4];
+        txt_editor = new Text[4];
+        for (int i= 0; i<4; i++){
+            option[i]= RectangleShape({100,50});
+            option[i].setFillColor(Color::Black);
+            txt_editor[i]= Text("", *fuente);
+            txt_editor[i].setCharacterSize(50);
+            txt_editor[i].setColor(Color::White);
+        }
+        txt_editor[0].setPosition({139,471});
+        txt_editor[1].setPosition({219,471});
+        txt_editor[2].setPosition({120,211});
+        txt_editor[3].setPosition({100,1000});
+
+        txt_editor[0].setString("No. de peones");
+        txt_editor[1].setString("Tiempo por turno");
+        txt_editor[2].setString("JUGAR");
+        txt_editor[3].setString("Salir");
+
+        option[0].setPosition({130,470});
+        option[1].setPosition({215,470});
+        option[2].setPosition({130,210});
+        option[3].setPosition({215,1150});
+    }
+    void renderMenu(RenderWindow &window){
+        // window->clear();
+        for (int i= 0; i<4; i++){
+            window.draw(option[i]);
+            window.draw(txt_editor[i]);
+        }
+//        if(window.hasFocus()){
+//            Cursor..renderizar(*window);
+//        }
+//        window->display();
+    }
+};
+
 struct ChessMenuScreen : public ChessScreen{
     Music music;
     Event event;
     Texture texture;
     Sprite sprite;
+    ChessMenu menu;
 
     ChessMenuScreen(){
         if (!music.openFromFile("./assets/sounds/MenuMusic.ogg")){
             exit(1);
         }
+        if (!texture.loadFromFile("./assets/chess_game1.png"))
+        {
+            exit(1); //TODO: add exception
+        }
+        sprite.setTexture(texture);
     }
     virtual int Run(RenderWindow &window){
         if(!wasRun){
@@ -170,11 +223,6 @@ struct ChessMenuScreen : public ChessScreen{
             music.play();
             music.setLoop(true);
 
-            if (!texture.loadFromFile("./assets/chess_game1.png"))
-            {
-                exit(1); //TODO: add exception
-            }
-            sprite.setTexture(texture);
         }else{
             /*
                 Code to run when the game was paused, and now, will to continue
@@ -205,6 +253,7 @@ struct ChessMenuScreen : public ChessScreen{
             }
             window.clear();
             window.draw(sprite);
+            menu.renderMenu(window);
             window.display();
         }
     }
@@ -212,49 +261,10 @@ struct ChessMenuScreen : public ChessScreen{
     virtual void Pause(){
         music.pause();
     }
+
+//    void setOptionsOnWindow(RenderWindow& window){
+//
+//    }
 };
-//Pasar_a_la_ventana_de_eventos= RenderStates opcion[4];
-//for (int i= 0; i<4; i++){
-//        option[i]= new RectangleShape({100,50});
-//        otipon[i]->setFillColor(color::black);
-//        txt_editor[i]= new Text("", *Fuente);
-//        txt_editor[i]->setCharacterSize(20);
-//}
-//txt_editor[0]->setPosition({139,471});
-//txt_editor[1]->setPosition({219,471});
-//txt_editor[2]->setPosition({120,211});
-//txt_editor[3]->setPosition({100,1000});
-//
-//txt_editor[0]->setString("No. de peones");
-//txt_editor[1]->setString("Tiempo por turno");
-//txt_editor[2]->setString("JUGAR");
-//txt_editor[3]->setString("Salir");
-//
-//option[0]->setPosition({130,470});
-//option[1]->setPosition({215,470});
-//option[2]->setPosition({130,210});
-//option[3]->setPosition({215,1150});
-//
-//void editor::Render_Menu(){
-//    window->clear();
-//    for (int i= 0; i<4; i++){
-//        window->daw(*option[i]);
-//        window->daw(*txt_editor[i]);
-//    }
-//    if(window->hasFocus()){
-//            Cursor.renderizar(*window);
-//    }
-//    window->display();
-//}
-//fuente= new Font;
-//fuente->loadFromFile("./assets/Fuente.ttf");
-//struct button{
-//    Font* fuente;
-//    Text* txt_editor[4];
-//    RenderWindow* window;
-//    RectangleShape* option[4];
-//    RectangleShape button;
-//    string name;
-//};
 
 #endif // CHESSSCREENS_H_INCLUDED
