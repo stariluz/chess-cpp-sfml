@@ -13,12 +13,13 @@ using namespace sf;
 
 
 struct ChessScreen{
+    bool wasRun=false;
     virtual int Run(RenderWindow &window){
         return 0;
     }
 
-    virtual int Pause(RenderWindow &window){
-        return 0;
+    virtual void Pause(){
+        return;
     }
 };
 
@@ -67,11 +68,21 @@ struct ChessGameScreen : public ChessScreen{
     }
 
     virtual int Run(RenderWindow &window){
+        if(!wasRun){
+            /*
+                Code to run when is the first run, and is needed to start some variables just one time
+            */
+            wasRun=true;
+            music.play();
+            music.setLoop(true);
+            // Ejecutamos un thread con el timer
+            timer_thread->launch();
+        }else{
+            /*
+                Code to run when the game was paused, and now, will to continue
+            */
+        }
         bool running = true;
-        music.play();
-
-        // Ejecutamos un thread con el timer
-        timer_thread->launch();
 
         while (running)
         {
@@ -87,9 +98,11 @@ struct ChessGameScreen : public ChessScreen{
                 if (event.type == Event::Closed)
                 {
                     window.close();
+                    exit(1);
                 }
                 else if (event.type == Event::MouseButtonPressed)
                 {
+                    return 0;
                     if (event.mouseButton.button == Mouse::Left)
                     {
                         ChessGame::onClick(event.mouseButton.x, event.mouseButton.y);
@@ -130,19 +143,46 @@ struct ChessGameScreen : public ChessScreen{
         return -1;
     }
 
+    virtual void Pause(){
+        // cout<<"PAUSAAAAAAAAAAAAAAAAAAAA";
+        music.pause();
+        // timer_thread->wait();
+    }
 };
 
 struct ChessMenuScreen : public ChessScreen{
-    virtual int Run(RenderWindow &window){
-        bool running = true;
-        Event event;
-        Texture texture;
-        if (!texture.loadFromFile("./assets/chess_game1.png"))
-        {
-            exit(1); //TODO: add exception
+    Music music;
+    Event event;
+    Texture texture;
+    Sprite sprite;
+
+    ChessMenuScreen(){
+        if (!music.openFromFile("./assets/sounds/MenuMusic.ogg")){
+            exit(1);
         }
-        Sprite sprite;
-        sprite.setTexture(texture);
+    }
+    virtual int Run(RenderWindow &window){
+        if(!wasRun){
+            /*
+                Code to run when is the first run, and is needed to start some variables just one time
+            */
+            wasRun=true;
+            music.play();
+            music.setLoop(true);
+
+            if (!texture.loadFromFile("./assets/chess_game1.png"))
+            {
+                exit(1); //TODO: add exception
+            }
+            sprite.setTexture(texture);
+        }else{
+            /*
+                Code to run when the game was paused, and now, will to continue
+            */
+        }
+
+        bool running = true;
+
         while (window.isOpen())
         {
             sf::Event event;
@@ -167,6 +207,10 @@ struct ChessMenuScreen : public ChessScreen{
             window.draw(sprite);
             window.display();
         }
+    }
+
+    virtual void Pause(){
+        music.pause();
     }
 };
 //Pasar_a_la_ventana_de_eventos= RenderStates opcion[4];

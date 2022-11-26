@@ -31,24 +31,21 @@ static const int WINDOW_VERTICAL_SIZE=ChessCoord::SIZE*8;
 int main()
 {
 
-    // music.setLoop(true);
     //Configuracion de la ventana del juego
     RenderWindow window(VideoMode(WINDOW_HORIZONTAL_SIZE, WINDOW_VERTICAL_SIZE), "Chess");
 
     vector<ChessScreen*> screens;
-    screens.push_back(new ChessMenuScreen()); // 0
-    screens.push_back(new ChessGameScreen()); // 1
-    int screenNumber=0;
+    screens.push_back(new ChessMenuScreen()); // Screen no. 0
+    screens.push_back(new ChessGameScreen()); // Screen no. 1
+    int currentScreen=0;
+    int nextScreen=0;
 
-    while(screenNumber>=0){
-        screenNumber=screens[screenNumber]->Run(window);
+    while(currentScreen>=0){
+        nextScreen=screens[currentScreen]->Run(window);
+        if(nextScreen!=currentScreen){
+            screens[currentScreen]->Pause();
+            currentScreen=nextScreen;
+        }
     }
     return 0;
 }
-
-    // sf::Music musica;
-    // if (!musica.openFromFile("./assets/sounds/MenuMusic.ogg"))
-    //     exit(1);
-
-    // musica.play();
-    // musica.setLoop(true);

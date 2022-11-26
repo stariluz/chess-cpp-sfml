@@ -73,7 +73,7 @@ struct PieceColorException : public exception{
     }
 };
 
-//Metodo para cargar las texturas
+// Metodo para cargar las texturas
 static Texture loadResource(string filename){
     Texture texture;
     // DEV cout <<filename<<"\n";
@@ -82,7 +82,8 @@ static Texture loadResource(string filename){
     }
     return texture;
 }
-//Estructura que almacena el manejo de cordenadas en el tablero por cada pieza
+
+// Estructura que almacena el manejo de cordenadas en el tablero por cada pieza
 struct ChessCoord {
     static const int SIZE;
     int valueX, y;
@@ -187,8 +188,8 @@ struct ChessPieceTypes{
     static const int P=5; // Pawn
 
 
-    // Validar si la pieza es valida según el tipo y el color
-    static IntRect getIntRectOfSpriteSheet(int pieceType, int color){
+    // Regresa el área de pieces spritesheet en el que se encuentra la pieza con el color y el tipo mandados
+    static IntRect getSpriteIntRectByColorType(int color, int pieceType){
         try{
             validate(pieceType,color);
         }catch(PieceTypeException& e){
@@ -202,6 +203,7 @@ struct ChessPieceTypes{
         }
         int pieceTypePX=pieceType*ChessCoord::SIZE;
         int colorPX=color*ChessCoord::SIZE;
+
         return IntRect(pieceTypePX, colorPX, ChessCoord::SIZE, ChessCoord::SIZE);
     }
 
@@ -264,7 +266,7 @@ struct ChessPiece
     void setSprite(int pieceType, int color)
     {
         sprite = Sprite(spriteSheet,
-                        ChessPieceTypes::getIntRectOfSpriteSheet(pieceType,color)
+                        ChessPieceTypes::getSpriteIntRectByColorType(color,pieceType)
                         );
         sprite.setPosition(position.getScreenPosition());
     }
