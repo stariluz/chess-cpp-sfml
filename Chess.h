@@ -224,6 +224,9 @@ struct ChessPiece
     /* Atributos estáticos de piezas */
     static const Texture spriteSheet;
     static int numberOfPieces;
+    static const int COLOR_WHITE=0;
+    static const int COLOR_BLACK=1;
+    static const int TYPE_PAWN=5;
 
     /* Metodos estáticos de piezas */
     static ChessPiece* createPiece(ChessCoord _position, int pieceType, int color);
@@ -305,6 +308,50 @@ struct Pawn : public ChessPiece
     }
 };
 
+struct ChessPlayer{
+    static int numberOfPlayers;
+    static ChessPlayer *players;
+    int numberOfPlayer;
+    static int playerInTurn;
+    ChessPiece** pieces;
+    int pieceColor;
+
+    ChessPlayer(){}
+    ChessPlayer(int _pieceColor){
+        numberOfPlayer = numberOfPlayers++;
+        if(_pieceColor == ChessPiece::COLOR_WHITE){
+            playerInTurn = numberOfPlayer;
+        }
+        pieceColor=_pieceColor;
+        pieces = new ChessPiece*[8];
+        initPieces(pieces, _pieceColor);
+    }
+
+    //Metodo para inicializar las piezas
+    void initPieces(ChessPiece**& pieces, int color) {
+        int position=1;
+        if(numberOfPlayer%2==1){
+            position=8;
+        }
+        for (int i = 0; i < 8; i++) {
+            pieces[i]=ChessPiece::createPiece(
+                ChessCoord(i + 1, position), ChessPiece::TYPE_PAWN, color
+            );
+            cout<<"PIECE "<<i<<": "<<*pieces[i]<<"\n";
+        }
+    }
+    static ChessPlayer createPlayer(int _pieceColor){
+        ChessPlayer* result=new ChessPlayer(_pieceColor);
+        return *result;
+    }
+    static void updatePlayerInTurn(){
+        playerInTurn=(playerInTurn+1)%2;
+    }
+};
+int ChessPlayer::numberOfPlayers=0;
+int ChessPlayer::playerInTurn=0;
+ChessPlayer* ChessPlayer::players=NULL;
+
 // Estructura del tablero
 struct ChessBoard
 {
@@ -340,12 +387,27 @@ struct ChessBoard
     static ChessPiece* getPieceAtPosition(int pxX, int pxY){
         ChessCoord coord=ChessCoord::getChessPosition(pxX,pxY);
         // DEV_COMMENT cout<<"COORD_PX: "<<pxX<<","<<pxY<<"\nCOORD: "<<coord<<"\n";
-        for(list<ChessPiece*>::iterator piece=ChessBoard::piecesOnBoard.begin(); piece!=ChessBoard::piecesOnBoard.end(); piece++){
-            if((*piece)->position==coord){
-                    cout<<**piece<<" ";
-                return &**piece;
+//        for(
+//            list<ChessPiece*>::iterator piece=ChessBoard::piecesOnBoard.begin();
+//            piece!=ChessBoard::piecesOnBoard.end();
+//            piece++
+//        ){
+//            if((*piece)->position==coord){
+//                    cout<<**piece<<" ";
+//                return &**piece;
+//            }
+//        }
+        for(
+            int i=0;
+            i<8;
+            i++
+        ){
+            if(ChessPlayer::players[ChessPlayer::playerInTurn].pieces[i]->position==coord){
+                cout<<ChessPlayer::players[ChessPlayer::playerInTurn].pieces[i]<<" ";
+                return ChessPlayer::players[ChessPlayer::playerInTurn].pieces[i];
             }
         }
+
         return NULL;
     }
 };
@@ -360,51 +422,6 @@ ChessPiece* ChessPiece::createPiece(ChessCoord _position, int pieceType, int col
     ChessBoard::piecesOnBoard.push_back(newPiece);
     return newPiece;
 }
-
-/*
-    Estructura del juego, maneja la seleccion de piezas y las mecanicas de seleccion
-    incluye el metodo de desplazamiento de pieza
-*/
-struct ChessGame{
-    static string status;
-    static ChessPiece* selectedPiece;
-
-    // Detectar donde ocurrió el click y actuar según qué se clickeo
-    static int onClick(int x, int y){
-        // DEV cout << "\nButton pressed" << endl;
-        // DEV cout << "mouse x: " << x << endl;
-        // DEV cout << "mouse y: " << y << endl;
-        if(status=="iddle"||status=="selected"){
-            selectedPiece=ChessBoard::getPieceAtPosition(x,y);
-            if(selectedPiece&&status=="selected"){
-                status="iddle";
-                selectedPiece=NULL;
-                // cout<<"UNSELECTED\n";
-                return 2;
-            }else if(selectedPiece){
-                status="selected";
-                // cout<<"SELECTED: "<<*selectedPiece<<"\n";
-                return 1;
-            }else{
-                status="iddle";
-                // cout<<"NO SELECTED\n";
-            }
-        }
-        return 0;
-    }
-
-    // Posiciona la pieza sobre la casilla de ajedrez en la que se encuentran los pixeles recibidos.
-    static void dragPiece(int pxX, int pxY){
-        if(!selectedPiece)return;
-        selectedPiece->setPosition(ChessCoord::getChessPosition(pxX, pxY));
-    }
-};
-
-// Estado inicial de el juego, nada está pasando así que es iddle
-string ChessGame::status="iddle";
-
-// Inicializa en ChessGame la pieza selecionada como nula
-ChessPiece* ChessGame::selectedPiece=NULL;
 
 /*
     Esta estructura llevara el manejo del reloj del juego
@@ -545,4 +562,5 @@ struct Game_Timer
         return os;
     }
 };
+
 #endif // CHESS_H_INCLUDED

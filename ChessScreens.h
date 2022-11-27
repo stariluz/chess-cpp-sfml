@@ -27,13 +27,79 @@ struct ChessScreen{
     }
 };
 
+/*
+    Estructura del juego, maneja la seleccion de piezas y las mecanicas de seleccion
+    incluye el metodo de desplazamiento de pieza
+*/
+struct ChessGame{
+    static int status;
+    static ChessPiece* selectedPiece;
+
+    static const int STATUS_IDLE=0; // Estado del juego sin actividad
+    static const int STATUS_SELECTED=1; // Estado del juego con selección de una pieza
+    static const int STATUS_RELEASED=2; // Estado del juego al terminar de mover una pieza
+
+    // Detectar donde ocurrió el click y actuar según qué se clickeo
+    static int onClick(int x, int y){
+        /**
+            Evento de click sobre el tablero de juego
+
+            CODIGOS DE RETORNO:
+            STATUS_IDLE = 0
+            STATUS_SELECTED = 1
+            STATUS_RELEASED = 2
+        */
+
+        // cout << "\nButton pressed" << endl; // DEV
+        // cout << "mouse x: " << x << endl; // DEV
+        // cout << "mouse y: " << y << endl; // DEV
+        if (status==STATUS_IDLE || status==STATUS_SELECTED)
+        {
+            if(selectedPiece&&status==STATUS_SELECTED)
+            {
+                status = STATUS_IDLE;
+                selectedPiece = NULL;
+                // cout<<"RELEASED\n"; // DEV
+                return STATUS_RELEASED;
+            }
+
+            selectedPiece=ChessBoard::getPieceAtPosition(x,y);
+
+            if(selectedPiece != NULL)
+            {
+                status = STATUS_SELECTED;
+                // cout<<"SELECTED: "<<*selectedPiece<<"\n"; // DEV
+                return STATUS_SELECTED;
+            }else
+            {
+                status = STATUS_IDLE;
+                // cout<<"NO SELECTED\n"; // DEV
+            }
+        }
+        return STATUS_IDLE;
+    }
+
+    // Posiciona la pieza sobre la casilla de ajedrez en la que se encuentran los pixeles recibidos.
+    static void dragPiece(int pxX, int pxY){
+        if(selectedPiece == NULL )return;
+        selectedPiece->setPosition(ChessCoord::getChessPosition(pxX, pxY));
+    }
+};
+
+// Estado inicial de el juego, nada está pasando así que es idle
+int ChessGame::status=ChessGame::STATUS_IDLE;
+
+// Inicializa en ChessGame la pieza selecionada como nula
+ChessPiece* ChessGame::selectedPiece=NULL;
+
 struct ChessGameScreen : public ChessScreen{
     static const int SCREEN_NUMBER;
     Music music;
     int windowHeight;
     int windowWidth;
-    ChessPiece** whitePieces;
-    ChessPiece** blackPieces;
+//    ChessPiece** whitePieces;
+//    ChessPiece** blackPieces;
+
     ChessBoard board;
     Event event;
 
@@ -45,31 +111,21 @@ struct ChessGameScreen : public ChessScreen{
         if (!music.openFromFile("./assets/sounds/BackgroundMusic.ogg"))
             cout<<"ERROR";// TODO: exception image
 
-        // Reserva de espacio para piezas blancas y negras
-        whitePieces = new ChessPiece*[8];
-        blackPieces = new ChessPiece*[8];
-
-        // Cargar posiciones iniciales de las piezas
-        initPieces(whitePieces, blackPieces);
-
+//        // Reserva de espacio para piezas blancas y negras
+//        whitePieces = new ChessPiece*[8];
+//        blackPieces = new ChessPiece*[8];
+//
+//        // Cargar posiciones iniciales de las piezas
+//        initPieces(whitePieces, blackPieces);
+        ChessPlayer::players=new ChessPlayer[2];
+        ChessPlayer::players[0]=ChessPlayer::createPlayer(ChessPiece::COLOR_WHITE);
+        ChessPlayer::players[1]=ChessPlayer::createPlayer(ChessPiece::COLOR_BLACK);
 
         //Inicializamos un contador
         current_time=0;
         s=new Game_Timer(current_time);
         timer_thread=new Thread(ref(*s));
         //TODO: Crear una variable para establecer el tiempo actual y el limite de tiempo
-    }
-
-    //Metodo para inicializar las piezas
-    void initPieces(ChessPiece**& whitePieces, ChessPiece**& blackPieces) {
-        for (int i = 0; i < 6; i++) {
-            whitePieces[i]=ChessPiece::createPiece(
-                ChessCoord(i + 1, 1), i, 0
-            );
-            blackPieces[i]=ChessPiece::createPiece(
-                ChessCoord(i + 1, 2), i, 1
-            );
-        }
     }
 
     virtual int Run(RenderWindow &window);
@@ -86,14 +142,19 @@ struct ChessGameScreen : public ChessScreen{
             Funcion que busca la acci�n realizada al dar click en la pantalla de juego
 
             C�digos de regreso:
-            CLICK_ON_BUTTONS = 2;
+            CLICK_ON_BUTTONS = 2 Usado cuando se da click a los botones de salir y de pausa
             CLICK_ON BOARD = 1 Usado cuando el click es en el tablero de juego
             CLICK_ON_NOTHING = 0 Usado cuando no se clique� nada interactuable
 
         */
+        int operation=0;
         if(ChessBoard::LIMITS.contains(mouse.x,mouse.y)){
-            if(!ChessGame::onClick(mouse.x, mouse.y)){
+            operation=ChessGame::onClick(mouse.x, mouse.y);
+            if(operation==ChessGame::STATUS_IDLE){
                 return CLICK_ON_NOTHING;
+            }
+            else if(operation==ChessGame::STATUS_RELEASED){
+                ChessPlayer::updatePlayerInTurn();
             }
             return CLICK_ON_BOARD;
         }else{
@@ -101,6 +162,8 @@ struct ChessGameScreen : public ChessScreen{
         }
     }
 };
+//ChessPlayer* ChessGameScreen::players=NULL;
+
 struct botton{
     RectangleShape r;
     string name;
@@ -117,7 +180,7 @@ struct ChessMenu{
     RectangleShape button;
     string name;
     ChessMenu(){
-        fuente= new Font();
+        fuente = new Font();
         fuente->loadFromFile("./assets/Fuente.ttf");
         option = new RectangleShape[4];
         txt_editor = new Text[4];
@@ -285,7 +348,7 @@ int ChessGameScreen::Run(RenderWindow &window){
             if (event.type == Event::Closed)
             {
                 window.close();
-                exit(1);
+//                exit(1);
             }
             else if (event.type == Event::MouseButtonPressed)
             {
@@ -298,7 +361,7 @@ int ChessGameScreen::Run(RenderWindow &window){
                     }
                 }
             }
-            else if (event.type == Event::MouseMoved && ChessGame::status=="selected")
+            else if (event.type == Event::MouseMoved && ChessGame::status==ChessGame::STATUS_SELECTED)
             {
                 ChessGame::dragPiece(event.mouseMove.x, event.mouseMove.y);
             }
@@ -306,18 +369,15 @@ int ChessGameScreen::Run(RenderWindow &window){
 
         window.clear();
 
-        /// Seccion de dibujo en la pantalla --------->
         /*
             Aqui se puede introducir cualquier cosa que se quiera dibujar
         */
 
         window.draw(board.sprite);
-        for (int i = 0; i < 6; i++) {
-
-            window.draw((*whitePieces[i]).sprite);
-            window.draw((*blackPieces[i]).sprite);
+        for(int i=0; i<8; i++){
+            window.draw((*ChessPlayer::players[0].pieces[i]).sprite);
+            window.draw((*ChessPlayer::players[1].pieces[i]).sprite);
         }
-
         if(s->eneable == true)
         {
             window.draw(s->clock_sprite);
@@ -327,7 +387,6 @@ int ChessGameScreen::Run(RenderWindow &window){
             window.draw(s->hand_timer_sprite);
         }
 
-        /// <--------- Final de la seccion de dibujo
         window.display();
     }
     return -1;
