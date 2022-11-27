@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/Audio/Music.hpp>
+#include <SFML/Audio/Sound.hpp>
 #include <list>
 #include <assert.h>
 #include <iostream>
@@ -70,6 +72,34 @@ struct PieceColorException : public exception{
         sonido2.setBuffer(buffer2);
         sonido2.setVolume(50);
         sonido2.play();
+    }
+};
+
+struct BoardImageException : public exception{
+    const char* what() throw() {
+        return "Error: The image doesn´t load";
+        sf::SoundBuffer buffer3;
+        sf::Sound sonido3;
+
+        if(!buffer3.loadFromFile("BoardImageExc.ogg")){
+           cout << "Error " << endl;
+        }
+
+        sonido3.setBuffer(buffer3);
+        sonido3.setVolume(50);
+        sonido3.play();
+    }
+};
+
+struct BackgroundMusicException : public exception{
+    const char* what() throw() {
+        return "Error: The Background Music doesn´t load";
+    }
+};
+
+struct MenuMusicException : public exception{
+    const char* what() throw() {
+        return "Error: The Menu Music doesn´t load";
     }
 };
 
@@ -377,8 +407,7 @@ struct ChessBoard
             this->imageFilename = boardImageFilename;
             sprite = Sprite(texture);
         }catch(...){
-            /// TODO: Add exception of image
-            cout<<"FATAL ERROR";
+            throw BoardImageException();
             exit(0);
         }
     }

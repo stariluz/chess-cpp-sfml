@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/Audio/Music.hpp>
+#include <SFML/Audio/Sound.hpp>
 #include "Chess.h"
 #include "ChessScreens.h"
 #include <iostream>
@@ -109,6 +111,7 @@ struct ChessGameScreen : public ChessScreen{
 
     ChessGameScreen(){
         if (!music.openFromFile("./assets/sounds/BackgroundMusic.ogg"))
+            throw BackgroundMusicException();
             cout<<"ERROR";// TODO: exception image
 
 //        // Reserva de espacio para piezas blancas y negras
@@ -132,7 +135,7 @@ struct ChessGameScreen : public ChessScreen{
 
     virtual void Pause(){
         // cout<<"PAUSAAAAAAAAAAAAAAAAAAAA";
-        music.pause();
+        music.sf::SoundStream::pause();
         // timer_thread->wait();
     }
 
@@ -240,11 +243,13 @@ struct ChessMenuScreen : public ChessScreen{
     list<botton> option;
     ChessMenuScreen(){
         if (!music.openFromFile("./assets/sounds/MenuMusic.ogg")){
+            throw MenuMusicException();
             exit(1);
         }
         if (!texture.loadFromFile("./assets/chess_game2.png"))
         {
-            exit(1); //TODO: add exception
+            throw ChessImageException();
+            exit(1);
         }
         sprite.setTexture(texture);
     }
@@ -254,7 +259,6 @@ struct ChessMenuScreen : public ChessScreen{
                 Code to run when is the first run, and is needed to start some variables just one time
             */
             wasRun=true;
-            music.play();
             music.setLoop(true);
 
         }else{
@@ -262,7 +266,7 @@ struct ChessMenuScreen : public ChessScreen{
                 Code to run when the game was paused, and now, will to continue
             */
         }
-
+        music.sf::SoundStream::play();
         bool running = true;
 
         while (window.isOpen())
@@ -310,7 +314,7 @@ struct ChessMenuScreen : public ChessScreen{
     }
 
     virtual void Pause(){
-        music.pause();
+        music.sf::SoundStream::pause();
     }
 };
 
@@ -323,7 +327,6 @@ int ChessGameScreen::Run(RenderWindow &window){
             Code to run when is the first run, and is needed to start some variables just one time
         */
         wasRun=true;
-        music.play();
         music.setLoop(true);
         // Ejecutamos un thread con el timer
         timer_thread->launch();
@@ -332,6 +335,7 @@ int ChessGameScreen::Run(RenderWindow &window){
             Code to run when the game was paused, and now, will to continue
         */
     }
+    music.sf::SoundStream::play();
     bool running = true;
 
     while (running)
