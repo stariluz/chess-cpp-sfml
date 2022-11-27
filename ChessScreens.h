@@ -186,7 +186,7 @@ struct ChessMenu{
     ChessMenu(){
         fuente = new Font();
         fuente->loadFromFile("./assets/Fuente.ttf");
-        option = new RectangleShape[4];
+        option = new RectangleShape[8];
         txt_editor = new Text[4];
         for (int i= 0; i<4; i++){
             txt_editor[i]= Text("", *fuente);
@@ -285,26 +285,29 @@ struct ChessMenuScreen : public ChessScreen{
                     case (Event::MouseButtonPressed):
                         if (event.mouseButton.button == Mouse::Left)
                         {
-                            cout<<"Click";
-                            return ChessGameScreen::SCREEN_NUMBER;
-//                            vector2i posicion_mouse;
-//                            posicion_mouse=Mouse::getPosition(window);
-//                            for (int i= 0; i<4; i++){
-//                                if (option[i]->getGlobalBounds().contains(posicion_mouse.x, posicion_mouse.y)){
-//                                    switch(i){
-//                                        case 0:
-//
-//                                        case 1:
-//
-//                                        case 2:
-//
-//                                        case 3:
-//
-//                                        case 4:
-//                                            exit(1);
-//                                    }
-//                                }
-//                            }
+                            Vector2i posicion_mouse;
+                            posicion_mouse=Mouse::getPosition(window);
+                            for (int i= 0; i<4; i++){
+//                                if (option[i]->getGlobalBounds().Contains(posicion_mouse.x, posicion_mouse.y)){
+                                    switch(i){
+                                        case 0:
+                                            break;
+
+                                        case 1:
+                                            break;
+
+                                        case 2:
+                                            break;
+
+                                        case 3:
+
+                                            break;
+
+                                        case 4:
+                                            exit(1);
+                                            break;
+                                    }
+                                }
                         }
                         break;
 
