@@ -191,13 +191,13 @@ struct ChessMenu{
         for (int i= 0; i<4; i++){
             txt_editor[i]= Text("", *fuente);
         }
-        option[0]= RectangleShape({300,60});
-        option[1]= RectangleShape({300,60});
+        option[0]= RectangleShape({200,60});
+        option[1]= RectangleShape({100,60});
         option[2]= RectangleShape({250,70});
         option[3]= RectangleShape({160,50});
 
-        option[0].setFillColor(Color::Black);
-        option[1].setFillColor(Color::Black);
+        option[0].setFillColor(Color::White);
+        option[1].setFillColor(Color::White);
         option[2].setFillColor(Color::White);
         option[3].setFillColor(Color::Red);
 
@@ -206,8 +206,8 @@ struct ChessMenu{
         option[2].setPosition({180,590});
         option[3].setPosition({890,700});
 
-        txt_editor[0].setColor(Color::White);
-        txt_editor[1].setColor(Color::White);
+        txt_editor[0].setColor(Color::Black);
+        txt_editor[1].setColor(Color::Black);
         txt_editor[2].setColor(Color::Black);
         txt_editor[3].setColor(Color::White);
 
@@ -221,8 +221,8 @@ struct ChessMenu{
         txt_editor[2].setPosition({213,545});
         txt_editor[3].setPosition({917,683});
 
-        txt_editor[0].setString("No. de peones");
-        txt_editor[1].setString("Tiempo por turno");
+        txt_editor[0].setString("Black");
+        txt_editor[1].setString("<");
         txt_editor[2].setString("JUGAR");
         txt_editor[3].setString("Salir");
 
@@ -248,7 +248,7 @@ struct ChessMenuScreen : public ChessScreen{
             throw MenuMusicException();
             exit(1);
         }
-        if (!texture.loadFromFile("./assets/chess_game2.png"))
+        if (!texture.loadFromFile("./assets/chess-game5.png"))
         {
             throw ChessImageException();
             exit(1);
