@@ -196,7 +196,6 @@ struct ChessMenuScreen : public ChessScreen{
                 Code to run when is the first run, and is needed to start some variables just one time
             */
             wasRun=true;
-            music.sf::SoundStream::play();
             music.setLoop(true);
 
         }else{
@@ -204,7 +203,7 @@ struct ChessMenuScreen : public ChessScreen{
                 Code to run when the game was paused, and now, will to continue
             */
         }
-
+        music.sf::SoundStream::play();
         bool running = true;
 
         while (window.isOpen())
@@ -265,7 +264,6 @@ int ChessGameScreen::Run(RenderWindow &window){
             Code to run when is the first run, and is needed to start some variables just one time
         */
         wasRun=true;
-        music.sf::SoundStream::play();
         music.setLoop(true);
         // Ejecutamos un thread con el timer
         timer_thread->launch();
@@ -274,6 +272,7 @@ int ChessGameScreen::Run(RenderWindow &window){
             Code to run when the game was paused, and now, will to continue
         */
     }
+    music.sf::SoundStream::play();
     bool running = true;
 
     while (running)
