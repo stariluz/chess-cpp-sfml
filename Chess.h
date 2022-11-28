@@ -134,17 +134,17 @@ struct ChessCoord {
 
     void setX(char _x) {
         int _valueX = getValueFromX(_x);
-        assert(_valueX > 0 && _valueX <= 8);
+        assert(_valueX >= 0 && _valueX <= 8);
         x = _x;
         valueX = _valueX;
 
     }
     void setY(int _y) {
-        assert(_y > 0 && _y <= 8);
+        assert(_y >= 0 && _y <= 8);
         y = _y;
     }
     void setValueX(int _valueX) {
-        assert(_valueX > 0 && _valueX <= 8);
+        assert(_valueX >= 0 && _valueX <= 8);
         valueX = _valueX;
         x = getXFromValue(_valueX);
     }
@@ -167,8 +167,8 @@ struct ChessCoord {
         ChessCoord result;
         result.y = y + obj.y;
         result.valueX = valueX + obj.valueX;
-        assert(result.valueX > 0 && result.valueX <= 8);
-        assert(result.y > 0 && result.y <= 8);
+        assert(result.valueX >= 0 && result.valueX <= 8);
+        assert(result.y >= 0 && result.y <= 8);
         result.x = getXFromValue(result.valueX);
         return result;
     }
@@ -176,8 +176,8 @@ struct ChessCoord {
         ChessCoord result;
         result.y = y - obj.y;
         result.valueX = valueX - obj.valueX;
-        assert(result.valueX > 0 && result.valueX <= 8);
-        assert(result.y > 0 && result.y <= 8);
+        assert(result.valueX >= 0 && result.valueX <= 8);
+        assert(result.y >= 0 && result.y <= 8);
         result.x = getXFromValue(result.valueX);
         return result;
     }
@@ -375,31 +375,29 @@ struct ChessPlayer{
                     ChessCoord(i + 1, position), ChessPiece::TYPE_PAWN, color
                 )
             );
-            cout<<"PIECE "<<i<<": "<<*pieces[i]<<"\n";
         }
     }
+
+    /* Metodo para crear jugador y retornarlo */
     static ChessPlayer createPlayer(int _pieceColor){
         ChessPlayer* result=new ChessPlayer(_pieceColor);
         return *result;
     }
 
+    /* Metodo que realiza la busqueda de la pieza a comer */
     static void eatPieceRival(ChessPiece* rivalPiece){
         vector<ChessPiece*>::iterator aux=players[rivalInTurn].pieces.begin();
         for(ChessPiece* piece:players[rivalInTurn].pieces){
             if(piece==rivalPiece){
-                cout<<"RIVAL PIECE TO EAT: "<< *piece<<"\n";
                 players[rivalInTurn].pieces.erase(aux);
                 break;
             }
             aux++;
         }
-        cout<<"PIECES: ";
-        for(ChessPiece* piece:players[rivalInTurn].pieces){
-            cout<<*piece<<" ";
-        }
-        cout<<"DELETING...";
         delete rivalPiece;
     }
+
+    /* Método para realizar la lógica de actualización de turno*/
     static void updatePlayerInTurn(){
         playerInTurn=rivalInTurn;
         rivalInTurn=(rivalInTurn+1)%2;
@@ -428,6 +426,45 @@ struct ChessPlayer{
     // Obtener piezas del rival en el turno actual en una posición a partir de los pixeles recibidos
     static ChessPiece** getPiecesOfRivalInTurnAtPosition(int pxX, int pxY){
         ChessCoord coord=ChessCoord::getChessPosition(pxX,pxY);
+        ChessPiece** results=new ChessPiece*[2];
+        results[0]=NULL;
+        results[1]=NULL;
+        int counter=0;
+        for(
+            ChessPiece* piece: ChessPlayer::players[ChessPlayer::rivalInTurn].pieces
+        ){
+            if(piece->position==coord){
+                // cout<<*piece<<" "; // DEV
+                results[counter]=piece;
+                counter++;
+            }
+        }
+
+
+        return results;
+    }
+
+    // Obtener piezas del jugador en el turno actual en una posición a partir de la coordenada de ajedrez
+    static ChessPiece** getPiecesOfPlayerInTurnAtPosition(ChessCoord coord){
+        ChessPiece** results=new ChessPiece*[2];
+        results[0]=NULL;
+        results[1]=NULL;
+        int counter=0;
+        for(
+            ChessPiece* piece: ChessPlayer::players[ChessPlayer::playerInTurn].pieces
+        ){
+            if(piece->position==coord){
+                // cout<<*piece<<" "; // DEV
+                results[counter]=piece;
+                counter++;
+            }
+        }
+
+        return results;
+    }
+
+    // Obtener piezas del rival en el turno actual en una posición a partir de la coordenada de ajedrez
+    static ChessPiece** getPiecesOfRivalInTurnAtPosition(ChessCoord coord){
         ChessPiece** results=new ChessPiece*[2];
         results[0]=NULL;
         results[1]=NULL;
