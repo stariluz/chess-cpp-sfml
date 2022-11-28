@@ -43,6 +43,7 @@ struct ChessGame{
     static const int STATUS_SELECTED=1; // Estado del juego con selección de una pieza
     static const int STATUS_RELEASED=2; // Estado del juego al terminar de mover una pieza
     static const int STATUS_EATED=3; // Estado del juego al ser comida una pieza
+    static const int STATUS_PUT_BACK=4; // Estado del juego al ser comida una pieza
 
     // Detectar donde ocurrió el click y actuar según qué se clickeo
     static int onClick(int x, int y){
@@ -85,7 +86,7 @@ struct ChessGame{
         if(playerPiecesInCoord[1]!=NULL){
             /** Click en una casilla con pieza propia */
 
-            // cout<<"2 PIECES"; //DEV
+            cout<<"CLICK EN CASILLA PROPIA\n"; //DEV
 
             if(playerPiecesInCoord[0] != selectedPiece){
                 newClickedPiece=playerPiecesInCoord[0];
@@ -95,15 +96,18 @@ struct ChessGame{
 
             /** Se resetea la pieza seleccionada anterior, y se selecciona la nueva pieza clickeada*/
             if(selectedPiece!=NULL){
-                *selectedPiece=stateSelectedPiece;
+                restoreMovement();
                 selectedPiece=newClickedPiece;
                 stateSelectedPiece=*selectedPiece;
+                calculateAvaiableMovements(selectedPiece);
                 // cout<<"SELECTED NEW\n"; // DEV
                 return STATUS_SELECTED;
             }
         }
         else if(playerPiecesInCoord[0]!=NULL && rivalPiecesInCoord[0]!=NULL){
             /** Click en una casilla con pieza rival */
+
+            cout<<"CLICK EN CASILLA RIVAL\n"; //DEV
 
             /** Se come una pieza rival */
             status = STATUS_EATED;
@@ -114,24 +118,44 @@ struct ChessGame{
         else if(playerPiecesInCoord[0]!=NULL){
             /** Click en una casilla sin pieza rival */
 
-//            cout<<"1 PIECE"; // DEV
-            newClickedPiece=playerPiecesInCoord[0];
+            cout<<"CLICK EN CASILLA SIN RIVAL\n"; //DEV
 
-            /** Se coloca la pieza seleccionada*/
-            if(selectedPiece!=NULL)
-            {
+            newClickedPiece=playerPiecesInCoord[0];
+            if(selectedPiece!=NULL){
+                /** La pieza fue colocada en la misma posición que estaba */
+                if(*newClickedPiece==stateSelectedPiece){
+                    cout<<"VOLVISTE AL INICIO CARNAL\n"; // DEV
+                    restoreMovement();
+                    status = STATUS_IDLE;
+                    return STATUS_PUT_BACK;
+                }
+
+
+                /** Se resetea la pieza seleccionada anterior, y se selecciona la nueva pieza clickeada*/
+                if(newClickedPiece != selectedPiece && selectedPiece!=NULL){
+                    cout<<"CAMBIAS PIEZA CRACK\n"; // DEV
+                    restoreMovement();
+                    selectedPiece=newClickedPiece;
+                    stateSelectedPiece=*selectedPiece;
+                    calculateAvaiableMovements(selectedPiece);
+                    status = STATUS_SELECTED;
+                    // cout<<"SELECTED NEW\n"; // DEV
+                    return STATUS_SELECTED;
+                }
+
+
+                /** Se coloca la pieza previamente seleccionada */
                 status = STATUS_IDLE;
                 selectedPiece = NULL;
                 // cout<<"RELEASED\n"; // DEV
                 return STATUS_RELEASED;
             }
-
             /** Se selecciona la pieza clickeada */
             else{
                 selectedPiece=newClickedPiece;
                 stateSelectedPiece=*selectedPiece;
-                calculateAvaiableMovements(selectedPiece);
                 status = STATUS_SELECTED;
+                calculateAvaiableMovements(selectedPiece);
 //                cout<<"SELECTED: "<<*selectedPiece<<"\n"; // DEV
 
                 return STATUS_SELECTED;
@@ -145,18 +169,20 @@ struct ChessGame{
     static void calculateAvaiableMovements(ChessPiece* selectedPiece){
         ChessCoord aux;
         avaiableMovements.clear();
-        cout<<"SELECTED: "<<selectedPiece->position<<" "<<selectedPiece->position.x<<"\n";
+        avaiableMovements.push_back(selectedPiece->position);
+//        cout<<"SELECTED: "<<selectedPiece->position<<" "<<selectedPiece->position.x<<"\n"; // DEV
         if(ChessPlayer::playerInTurn==1&&selectedPiece->position.y>1){
-            cout<<"PLAYER 1: ";
+//            cout<<"PLAYER 1: "; //DEV
             aux=selectedPiece->position-ChessCoord(0,1);
-            cout<<aux<<" ";
-            if(ChessPlayer::getPiecesOfPlayerInTurnAtPosition(aux)[0] == NULL){
+//            cout<<aux<<" "; // DEV
+            if(ChessPlayer::getPiecesOfPlayerInTurnAtPosition(aux)[0] == NULL
+               && ChessPlayer::getPiecesOfRivalInTurnAtPosition(aux)[0] == NULL){
                 avaiableMovements.push_back(aux);
             }
 
             if(selectedPiece->position.valueX>1){
                 aux=selectedPiece->position-ChessCoord(1,1);
-                cout<<"L"<<aux<<" ";
+//                cout<<"L"<<aux<<" "; // DEV
                 if(ChessPlayer::getPiecesOfRivalInTurnAtPosition(aux)[0] != NULL){
                     avaiableMovements.push_back(aux);
                 }
@@ -164,23 +190,24 @@ struct ChessGame{
 
             if(selectedPiece->position.valueX<8){
                 aux=selectedPiece->position+ChessCoord(1,0)-ChessCoord(0,1);
-                cout<<"R"<<aux<<" ";
+//                cout<<"R"<<aux<<" "; // DEV
                 if(ChessPlayer::getPiecesOfRivalInTurnAtPosition(aux)[0] != NULL){
                     avaiableMovements.push_back(aux);
                 }
             }
         }
         else if(ChessPlayer::playerInTurn==0&&selectedPiece->position.y<8){
-            cout<<"PLAYER 2: ";
+//            cout<<"PLAYER 2: "; // DEV
             aux=selectedPiece->position+ChessCoord(0,1);
-            cout<<aux<<" ";
-            if(ChessPlayer::getPiecesOfPlayerInTurnAtPosition(aux)[0] == NULL){
+//            cout<<aux<<" "; // DEV
+            if(ChessPlayer::getPiecesOfPlayerInTurnAtPosition(aux)[0] == NULL
+               && ChessPlayer::getPiecesOfRivalInTurnAtPosition(aux)[0] == NULL){
                 avaiableMovements.push_back(aux);
             }
 
             if(selectedPiece->position.valueX>1){
                 aux=selectedPiece->position-ChessCoord(1,0)+ChessCoord(0,1);
-                cout<<"L"<<aux<<" ";
+//                cout<<"L"<<aux<<" "; // DEV
                 if(ChessPlayer::getPiecesOfRivalInTurnAtPosition(aux)[0] != NULL){
                     avaiableMovements.push_back(aux);
                 }
@@ -188,29 +215,41 @@ struct ChessGame{
 
             if(selectedPiece->position.valueX<8){
                 aux=selectedPiece->position+ChessCoord(1,1);
-                cout<<"R"<<aux<<" ";
+//                cout<<"R"<<aux<<" "; // DEV
                 if(ChessPlayer::getPiecesOfRivalInTurnAtPosition(aux)[0] != NULL){
                     avaiableMovements.push_back(aux);
                 }
             }
         }
-        cout<<"AVAIABLE MOVEMENTS: ";
+        cout<<"AVAIABLE MOVEMENTS: "; // DEV
         for(ChessCoord movement:avaiableMovements){
             cout<<movement<<", ";
-        }
-        cout<<"\n";
+        } // DEV
+        cout<<"\n"; // DEV
     }
 
     // Posiciona la pieza sobre la casilla de ajedrez en la que se encuentran los pixeles recibidos.
     static void dragPiece(int pxX, int pxY){
         if(selectedPiece == NULL )return;
         ChessCoord coordToMove=ChessCoord::getChessPosition(pxX, pxY);
+        cout<<"SEARCH MOVEMENT:";
         for(ChessCoord movement:avaiableMovements){
+            cout<<movement<<", ";
             if(movement==coordToMove){
                 selectedPiece->setPosition(coordToMove);
                 return;
             }
         }
+        cout<<"\n";
+    }
+
+    static void restoreMovement(){
+        if(selectedPiece==NULL)return;
+        cout<<"VAN PA FUERA MI LOCO\n";
+        avaiableMovements.clear();
+        *selectedPiece = stateSelectedPiece;
+        selectedPiece = NULL;
+        status=STATUS_IDLE;
     }
 };
 
@@ -250,8 +289,9 @@ struct ChessGameScreen : public ChessScreen{
 
         // Reserva de espacio para los jugadores y sus piecas
         ChessPlayer::players=new ChessPlayer[2];
-        ChessPlayer::players[0]=ChessPlayer::createPlayer(ChessPiece::COLOR_BLACK);
-        ChessPlayer::players[1]=ChessPlayer::createPlayer(ChessPiece::COLOR_WHITE);
+        // TODO: Solicitar al menú el color del jugador 1, para crearlos en ese orden
+        ChessPlayer::players[0]=ChessPlayer::createPlayer(ChessPiece::COLOR_WHITE);
+        ChessPlayer::players[1]=ChessPlayer::createPlayer(ChessPiece::COLOR_BLACK);
 
         //Inicializamos un contador
         current_time=0;
@@ -265,6 +305,7 @@ struct ChessGameScreen : public ChessScreen{
     virtual void Pause(){
         // cout<<"PAUSAAAAAAAAAAAAAAAAAAAA";
         music.sf::SoundStream::pause();
+        ChessGame::restoreMovement();
         // timer_thread->wait();
     }
 

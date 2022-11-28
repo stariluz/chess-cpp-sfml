@@ -313,6 +313,10 @@ struct ChessPiece
         os << piece.pieceType<<"("<<piece.position<<")";
         return os;
     }
+
+    bool operator == (const ChessPiece& obj) {
+        return (position == obj.position && pieceType == obj.pieceType);
+    }
 };
 
 // Inicializar el contador de piezas a 0
