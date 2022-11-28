@@ -332,6 +332,7 @@ struct ChessMenuScreen : public ChessScreen{
                     case (Event::MouseButtonPressed):
                         if (event.mouseButton.button == Mouse::Left)
                         {
+                            return ChessGameScreen::SCREEN_NUMBER;
                             Vector2i posicion_mouse;
                             posicion_mouse=Mouse::getPosition(window);
                             for (int i= 0; i<4; i++){
@@ -377,16 +378,18 @@ struct ChessMenuScreen : public ChessScreen{
 
 int ChessGameScreen::Run(RenderWindow &window){
     if(!wasRun){
-        /*
-            Code to run when is the first run, and is needed to start some variables just one time
+        /**
+            Codigo a ejecutar solamente en la primer llamada al Run
+            El codigo aqui se usa en caso de requerir acciones que se ejecuten 1 sola ocasión en la primer llamada.
         */
         wasRun=true;
         music.setLoop(true);
         // Ejecutamos un thread con el timer
         timer_thread->launch();
     }else{
-        /*
-            Code to run when the game was paused, and now, will to continue
+        /**
+            Codigo a ejecutar siempre despues de la primera llamada a Run.
+            Aquí debe ir todo código que reanude las acciones que el metodo Pause haya detenido.
         */
     }
 
