@@ -36,10 +36,12 @@ struct ChessScreen{
 struct ChessGame{
     static int status;
     static ChessPiece* selectedPiece;
+    static ChessPiece stateSelectedPiece;
 
     static const int STATUS_IDLE=0; // Estado del juego sin actividad
     static const int STATUS_SELECTED=1; // Estado del juego con selección de una pieza
     static const int STATUS_RELEASED=2; // Estado del juego al terminar de mover una pieza
+    static const int STATUS_EATED=3; // Estado del juego al ser comida una pieza
 
     // Detectar donde ocurrió el click y actuar según qué se clickeo
     static int onClick(int x, int y){
@@ -50,6 +52,7 @@ struct ChessGame{
             STATUS_IDLE = 0
             STATUS_SELECTED = 1
             STATUS_RELEASED = 2
+            STATUS_EATED = 3
         */
 
         // cout << "\nButton pressed" << endl; // DEV
@@ -57,27 +60,69 @@ struct ChessGame{
         // cout << "mouse y: " << y << endl; // DEV
         if (status==STATUS_IDLE || status==STATUS_SELECTED)
         {
-            if(selectedPiece&&status==STATUS_SELECTED)
-            {
+
+            ChessPiece** playerPiecesInCoord=NULL;
+            ChessPiece** rivalPiecesInCoord=NULL;
+            ChessPiece* newClickedPiece=NULL;
+
+            playerPiecesInCoord=ChessPlayer::getPiecesOfPlayerInTurnAtPosition(x,y);
+            rivalPiecesInCoord=ChessPlayer::getPiecesOfRivalInTurnAtPosition(x,y);
+
+
+            if(playerPiecesInCoord[1]!=NULL){
+                /** Click en una casilla con pieza propia */
+                // cout<<"2 PIECES"; //DEV
+                if(playerPiecesInCoord[0] != selectedPiece){
+                    newClickedPiece=playerPiecesInCoord[0];
+                }else{
+                    newClickedPiece=playerPiecesInCoord[1];
+                }
+
+                /** Se resetea la pieza seleccionada anterior, y se selecciona la nueva pieza clickeada*/
+                if(selectedPiece!=NULL && status==STATUS_SELECTED){
+                    // TODO: Error de movimiento inválido
+                    *selectedPiece=stateSelectedPiece;
+                    selectedPiece=newClickedPiece;
+                    stateSelectedPiece=*selectedPiece;
+                    // cout<<"SELECTED NEW\n"; // DEV
+                    return STATUS_SELECTED;
+                }
+            }
+            else if(playerPiecesInCoord[0]!=NULL&&rivalPiecesInCoord[0]!=NULL){
+                /** Click en una casilla con pieza rival */
+
+                /** Se come una pieza rival */
                 status = STATUS_IDLE;
-                selectedPiece = NULL;
-                // cout<<"RELEASED\n"; // DEV
-                return STATUS_RELEASED;
+                ChessPlayer::eatPieceRival(rivalPiecesInCoord[0]);
+                return STATUS_EATED;
+            }
+            else if(playerPiecesInCoord[0]!=NULL){
+                /** Click en una casilla sin pieza rival */
+
+                // cout<<"1 PIECE"; // DEV
+                newClickedPiece=playerPiecesInCoord[0];
+
+                /** Se coloca la pieza seleccionada*/
+                if(selectedPiece!=NULL && status==STATUS_SELECTED)
+                {
+                    status = STATUS_IDLE;
+                    selectedPiece = NULL;
+                    // cout<<"RELEASED\n"; // DEV
+                    return STATUS_RELEASED;
+                }
+
+                /** Se selecciona la pieza clickeada */
+                else{
+                    selectedPiece=newClickedPiece;
+                    stateSelectedPiece=*selectedPiece;
+                    status = STATUS_SELECTED;
+                    cout<<"SELECTED: "<<*selectedPiece<<"\n"; // DEV
+                    return STATUS_SELECTED;
+                }
             }
 
-            selectedPiece=ChessBoard::getPieceAtPosition(x,y);
-
-            if(selectedPiece != NULL)
-            {
-                status = STATUS_SELECTED;
-                // cout<<"SELECTED: "<<*selectedPiece<<"\n"; // DEV
-                return STATUS_SELECTED;
-            }else
-            {
-                status = STATUS_IDLE;
-                // cout<<"NO SELECTED\n"; // DEV
-            }
         }
+        status = STATUS_IDLE;
         return STATUS_IDLE;
     }
 
@@ -93,6 +138,8 @@ int ChessGame::status=ChessGame::STATUS_IDLE;
 
 // Inicializa en ChessGame la pieza selecionada como nula
 ChessPiece* ChessGame::selectedPiece=NULL;
+
+ChessPiece ChessGame::stateSelectedPiece;
 
 struct ChessGameScreen : public ChessScreen{
     static const int SCREEN_NUMBER;
@@ -385,9 +432,14 @@ int ChessGameScreen::Run(RenderWindow &window){
 
         window.draw(board.sprite);
         for(int i=0; i<8; i++){
-            window.draw((*ChessPlayer::players[0].pieces[i]).sprite);
-            window.draw((*ChessPlayer::players[1].pieces[i]).sprite);
+            try{
+                window.draw((*ChessPlayer::players[0].pieces[i]).sprite);
+                window.draw((*ChessPlayer::players[1].pieces[i]).sprite);
+            }catch(...){
+                cout<<"ERROOOOOOOOOOOOOOOOOR: NO HAY SPRITE\n";
+            }
         }
+
         if(s->eneable == true)
         {
             window.draw(s->clock_sprite);

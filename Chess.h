@@ -341,9 +341,14 @@ struct Pawn : public ChessPiece
 struct ChessPlayer{
     static int numberOfPlayers;
     static ChessPlayer *players;
-    int numberOfPlayer;
     static int playerInTurn;
-    ChessPiece** pieces;
+    static int rivalInTurn;
+
+    int numberOfPlayer;
+//    ChessPiece** pieces;
+
+    // Inicialización de lista de apuntadores a piezas, que guardará una lista con todas las piezas en juego.
+    vector<ChessPiece*> pieces;
     int pieceColor;
 
     ChessPlayer(){}
@@ -351,21 +356,24 @@ struct ChessPlayer{
         numberOfPlayer = numberOfPlayers++;
         if(_pieceColor == ChessPiece::COLOR_WHITE){
             playerInTurn = numberOfPlayer;
+            rivalInTurn = (numberOfPlayer+1)%2;
         }
         pieceColor=_pieceColor;
-        pieces = new ChessPiece*[8];
-        initPieces(pieces, _pieceColor);
+        // pieces = new ChessPiece*[8];
+        initPieces(_pieceColor);
     }
 
     //Metodo para inicializar las piezas
-    void initPieces(ChessPiece**& pieces, int color) {
+    void initPieces(int color) {
         int position=1;
         if(numberOfPlayer%2==1){
             position=8;
         }
         for (int i = 0; i < 8; i++) {
-            pieces[i]=ChessPiece::createPiece(
-                ChessCoord(i + 1, position), ChessPiece::TYPE_PAWN, color
+            pieces.push_back(
+                ChessPiece::createPiece(
+                    ChessCoord(i + 1, position), ChessPiece::TYPE_PAWN, color
+                )
             );
             cout<<"PIECE "<<i<<": "<<*pieces[i]<<"\n";
         }
@@ -374,12 +382,72 @@ struct ChessPlayer{
         ChessPlayer* result=new ChessPlayer(_pieceColor);
         return *result;
     }
-    static void updatePlayerInTurn(){
-        playerInTurn=(playerInTurn+1)%2;
+
+    static void eatPieceRival(ChessPiece* rivalPiece){
+        vector<ChessPiece*>::iterator aux=players[rivalInTurn].pieces.begin();
+        for(ChessPiece* piece:players[rivalInTurn].pieces){
+            if(piece==rivalPiece){
+                players[rivalInTurn].pieces.erase(aux);
+                break;
+            }
+            aux++;
+        }
+//        delete rivalPiece;
     }
+    static void updatePlayerInTurn(){
+        playerInTurn=rivalInTurn;
+        rivalInTurn=(rivalInTurn+1)%2;
+
+    }
+
+    // Obtener piezas del jugador en el turno actual en una posición a partir de los pixeles recibidos
+    static ChessPiece** getPiecesOfPlayerInTurnAtPosition(int pxX, int pxY){
+        ChessCoord coord=ChessCoord::getChessPosition(pxX,pxY);
+        ChessPiece** results=new ChessPiece*[2];
+        results[0]=NULL;
+        results[1]=NULL;
+        int counter=0;
+        for(
+            int i=0;
+            i<8;
+            i++
+        ){
+            if(ChessPlayer::players[ChessPlayer::playerInTurn].pieces[i]->position==coord){
+                // cout<<ChessPlayer::players[ChessPlayer::playerInTurn].pieces[i]<<" "; // DEV
+                results[counter]=ChessPlayer::players[ChessPlayer::playerInTurn].pieces[i];
+                counter++;
+            }
+        }
+
+        return results;
+    }
+
+    // Obtener piezas del rival en el turno actual en una posición a partir de los pixeles recibidos
+    static ChessPiece** getPiecesOfRivalInTurnAtPosition(int pxX, int pxY){
+        ChessCoord coord=ChessCoord::getChessPosition(pxX,pxY);
+        ChessPiece** results=new ChessPiece*[2];
+        results[0]=NULL;
+        results[1]=NULL;
+        int counter=0;
+        for(
+            int i=0;
+            i<8;
+            i++
+        ){
+            if(ChessPlayer::players[ChessPlayer::rivalInTurn].pieces[i]->position==coord){
+                // cout<<ChessPlayer::players[ChessPlayer::rivalInTurn].pieces[i]<<" "; // DEV
+                results[counter]=ChessPlayer::players[ChessPlayer::rivalInTurn].pieces[i];
+                counter++;
+            }
+        }
+
+        return results;
+    }
+
 };
 int ChessPlayer::numberOfPlayers=0;
 int ChessPlayer::playerInTurn=0;
+int ChessPlayer::rivalInTurn=1;
 ChessPlayer* ChessPlayer::players=NULL;
 
 // Estructura del tablero
@@ -415,28 +483,18 @@ struct ChessBoard
     // Obtener la pieza en una posición a partir de los pixeles recibidos
     static ChessPiece* getPieceAtPosition(int pxX, int pxY){
         ChessCoord coord=ChessCoord::getChessPosition(pxX,pxY);
-        // DEV_COMMENT cout<<"COORD_PX: "<<pxX<<","<<pxY<<"\nCOORD: "<<coord<<"\n";
-//        for(
-//            list<ChessPiece*>::iterator piece=ChessBoard::piecesOnBoard.begin();
-//            piece!=ChessBoard::piecesOnBoard.end();
-//            piece++
-//        ){
-//            if((*piece)->position==coord){
-//                    cout<<**piece<<" ";
-//                return &**piece;
-//            }
-//        }
+        // cout<<"COORD_PX: "<<pxX<<","<<pxY<<"\nCOORD: "<<coord<<"\n"; // DEV
+
         for(
-            int i=0;
-            i<8;
-            i++
+            list<ChessPiece*>::iterator piece=ChessBoard::piecesOnBoard.begin();
+            piece!=ChessBoard::piecesOnBoard.end();
+            piece++
         ){
-            if(ChessPlayer::players[ChessPlayer::playerInTurn].pieces[i]->position==coord){
-                cout<<ChessPlayer::players[ChessPlayer::playerInTurn].pieces[i]<<" ";
-                return ChessPlayer::players[ChessPlayer::playerInTurn].pieces[i];
+            if((*piece)->position==coord){
+                    cout<<**piece<<" ";
+                return &**piece;
             }
         }
-
         return NULL;
     }
 };
