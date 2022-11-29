@@ -4,6 +4,8 @@
 #include <SFML/Audio/Sound.hpp>
 #include "Chess.h"
 #include "ChessScreens.h"
+#include "ChessGameScreen.h"
+#include "ChessMenuScreen.h"
 #include "ChessExceptions.h"
 #include <iostream>
 #include <thread>
@@ -32,8 +34,6 @@ static const int WINDOW_HORIZONTAL_SIZE=1067;
 static const int WINDOW_VERTICAL_SIZE=ChessCoord::SIZE*8;
 
 // Asignación de el numero de las pantallas según el orden
-const int ChessMenuScreen::SCREEN_NUMBER=1;
-const int ChessGameScreen::SCREEN_NUMBER=2;
 
 int main()
 {
