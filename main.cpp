@@ -1,3 +1,8 @@
+/**
+     Todo el equipo While se compromete y comprometió al código de honor:
+     "No hemos brindado ni recibido asistencia no autorizada en este proyecto"
+*/
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Audio/Music.hpp>
