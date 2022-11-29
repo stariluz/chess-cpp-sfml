@@ -14,15 +14,15 @@
 using namespace std;
 using namespace sf;
 
-static int MAIN_PLAYER_COLOR=0;
+static int MAIN_PLAYER_COLOR=ChessPiece::COLOR_WHITE;
 static int MINUTES_PER_TURN=1;
 
 struct ChessMenu{
     Font* fuente;
     Text* txt_editor=NULL;
     RectangleShape* option=NULL;
-    RectangleShape minutesShape;
     Text minutesText;
+    Text colorText;
     RenderWindow* window;
     RectangleShape button;
     string name;
@@ -41,12 +41,12 @@ struct ChessMenu{
         option[4]= RectangleShape({140,60});
         option[5]= RectangleShape({80,80});
 
-        option[0].setFillColor(Color::Blue);
-        option[1].setFillColor(Color::Blue);
-        option[2].setFillColor(Color::Blue);
-        option[3].setFillColor(Color::Blue);
-        option[4].setFillColor(Color::Blue);
-        option[5].setFillColor(Color::Blue);
+        option[0].setFillColor(Color::Transparent);
+        option[1].setFillColor(Color::Transparent);
+        option[2].setFillColor(Color::Transparent);
+        option[3].setFillColor(Color::Transparent);
+        option[4].setFillColor(Color::Transparent);
+        option[5].setFillColor(Color::Transparent);
 
         option[0].setPosition({350,357});
         option[1].setPosition({390,460});
@@ -55,22 +55,19 @@ struct ChessMenu{
         option[4].setPosition({885,700});
         option[5].setPosition({945,32});
 
-        minutesShape= RectangleShape({60,50});
-        minutesShape.setFillColor(Color::Red);
-        minutesShape.setPosition({430,455});
-
         minutesText.setFont(*fuente);
-        minutesText.setColor(Color::Red);
+        minutesText.setColor(Color::Black);
         minutesText.setCharacterSize(50);
         minutesText.setPosition({450,435});
         minutesText.setString("1");
 
-//        txt_editor[0].setString("Blanco");
-////        txt_editor[1].setString("-");
-////        txt_editor[2].setString("+");
-//        txt_editor[3].setString("JUGAR");
-//        txt_editor[4].setString("Salir");
-//        txt_editor[5].setString("?");
+
+        colorText.setFont(*fuente);
+        colorText.setColor(Color::Black);
+        colorText.setCharacterSize(50);
+        colorText.setPosition({375,336});
+        colorText.setString("Blanco");
+
 
     }
     void renderMenu(RenderWindow &window){
@@ -80,8 +77,16 @@ struct ChessMenu{
 //        window.draw(minutesShape);
 //        window.draw(minutesText);
     }
+    void updateColor(){
+        string text="Blanco";
+        if(MAIN_PLAYER_COLOR==ChessPiece::COLOR_BLACK){
+            text="Negro";
+        }
+        cout<<"TEXT: "<<text<<"\n";
+        colorText.setString(text);
+    }
     void updateMinutes(){
-        string text=""+MINUTES_PER_TURN;
+        string text=to_string(MINUTES_PER_TURN);
         cout<<"TEXT: "<<text<<"\n";
         minutesText.setString(text);
     }
@@ -171,8 +176,8 @@ struct ChessMenuScreen : public ChessScreen
             window.clear();
             window.draw(sprite);
             menu.renderMenu(window);
-//            window.draw(menu.minutesShape);
             window.draw(menu.minutesText);
+            window.draw(menu.colorText);
             window.display();
         }
     }
@@ -208,6 +213,8 @@ struct ChessMenuScreen : public ChessScreen
         }else{
             MAIN_PLAYER_COLOR=ChessPiece::COLOR_WHITE;
         }
+        menu.updateColor();
+
         cout<<"CHANGECOLOR: "<<MAIN_PLAYER_COLOR<<"\n";
     }
     static int ActionPause(ChessMenu& menu){
