@@ -15,77 +15,88 @@ using namespace sf;
 */
 struct ChessImageException : public exception {
     const char* what() throw() {
-        return "Couldn't load the resource";
         sf::SoundBuffer buffer3;
         sf::Sound sonido3;
 
-        if(!buffer3.loadFromFile("ChessImageExc.ogg")){
-           cout << "Error " << endl;
+        if(buffer3.loadFromFile("ChessImageExc.ogg")){
+            sonido3.setBuffer(buffer3);
+            sonido3.setVolume(50);
+            sonido3.play();
         }
 
-        sonido3.setBuffer(buffer3);
-        sonido3.setVolume(50);
-        sonido3.play();
+        return "No se pudo cargar el recurso";
     }
 };
 
 struct PieceTypeException : public exception{
     const char* what() throw() {
-        return "The piece type isn't valid";
         sf::SoundBuffer buffer;
         sf::Sound sonido;
 
-        if(!buffer.loadFromFile("PieceTypeExc.ogg")){
-           cout << "Error " << endl;
+        if(buffer.loadFromFile("PieceTypeExc.ogg")){
+            sonido.setBuffer(buffer);
+            sonido.setVolume(50);
+            sonido.play();
         }
 
-        sonido.setBuffer(buffer);
-        sonido.setVolume(50);
-        sonido.play();
+        return "El tipo de pieza no es valido";
     }
 };
 
 struct PieceColorException : public exception{
     const char* what() throw() {
-        return "The color isn't valid";
         sf::SoundBuffer buffer2;
         sf::Sound sonido2;
 
-        if(!buffer2.loadFromFile("PieceColorExc.ogg")){
-           cout << "Error " << endl;
+        if(buffer2.loadFromFile("PieceColorExc.ogg")){
+            sonido2.setBuffer(buffer2);
+            sonido2.setVolume(50);
+            sonido2.play();
         }
 
-        sonido2.setBuffer(buffer2);
-        sonido2.setVolume(50);
-        sonido2.play();
+        return "El color no es valido";
     }
 };
 
 struct BoardImageException : public exception{
     const char* what() throw() {
-        return "Error: The image doesn´t load";
         SoundBuffer buffer3;
         Sound sonido3;
 
-        if(!buffer3.loadFromFile("BoardImageExc.ogg")){
-           cout << "Error " << endl;
+        if(buffer3.loadFromFile("BoardImageExc.ogg")){
+            sonido3.setBuffer(buffer3);
+            sonido3.setVolume(50);
+            sonido3.play();
         }
 
-        sonido3.setBuffer(buffer3);
-        sonido3.setVolume(50);
-        sonido3.play();
+        return "Error: La imagen no carga";
+    }
+};
+
+struct InvalidMovement : public exception{
+    const char* what() throw() {
+        SoundBuffer buffer4;
+        Sound sonido4;
+
+        if(buffer4.loadFromFile("InvalidMovementExc.ogg")){
+            sonido4.setBuffer(buffer4);
+            sonido4.setVolume(50);
+            sonido4.play();
+        }
+
+        return "Error: Movimiento invalido";
     }
 };
 
 struct BackgroundMusicException : public exception{
     const char* what() throw() {
-        return "Error: The Background Music doesn´t load";
+        return "Error: La musica de fondo no carga";
     }
 };
 
 struct MenuMusicException : public exception{
     const char* what() throw() {
-        return "Error: The Menu Music doesn´t load";
+        return "Error: La musica del menu no carga";
     }
 };
 

@@ -141,6 +141,7 @@ struct ChessMenuScreen : public ChessScreen
             */
         }
         music.play();
+        music.setVolume(40.f);
         bool running = true;
 
         while (window.isOpen())
