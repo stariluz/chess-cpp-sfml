@@ -349,45 +349,59 @@ struct ChessMenu{
     ChessMenu(){
         fuente = new Font();
         fuente->loadFromFile("./assets/Fuente.ttf");
-        option = new RectangleShape[8];
-        txt_editor = new Text[4];
-        for (int i= 0; i<4; i++){
+        option = new RectangleShape[6];
+        txt_editor = new Text[6];
+        for (int i= 0; i<8; i++){
             txt_editor[i]= Text("", *fuente);
         }
-        option[0]= RectangleShape({200,60});
-        option[1]= RectangleShape({100,60});
-        option[2]= RectangleShape({250,70});
-        option[3]= RectangleShape({160,50});
+        option[0]= RectangleShape({140,40});
+        option[1]= RectangleShape({40,42});
+        option[2]= RectangleShape({38,40});
+        option[3]= RectangleShape({250,80});
+        option[4]= RectangleShape({160,50});
+        option[5]= RectangleShape({160,50});
 
         option[0].setFillColor(Color::White);
-        option[1].setFillColor(Color::White);
-        option[2].setFillColor(Color::White);
-        option[3].setFillColor(Color::Red);
+        option[1].setFillColor(Color::Black);
+        option[2].setFillColor(Color::Black);
+        option[3].setFillColor(Color::White);
+        option[4].setFillColor(Color::Red);
+        option[5].setFillColor(Color::White);
 
-        option[0].setPosition({100,375});
-        option[1].setPosition({100,445});
-        option[2].setPosition({180,590});
-        option[3].setPosition({890,700});
+        option[0].setPosition({350,357});
+        option[1].setPosition({335,355});
+        option[2].setPosition({490,357});
+        option[3].setPosition({180,600});
+        option[4].setPosition({890,700});
+        option[5].setPosition({890,100});
 
         txt_editor[0].setColor(Color::Black);
-        txt_editor[1].setColor(Color::Black);
-        txt_editor[2].setColor(Color::Black);
-        txt_editor[3].setColor(Color::White);
+        txt_editor[1].setColor(Color::White);
+        txt_editor[2].setColor(Color::White);
+        txt_editor[3].setColor(Color::Black);
+        txt_editor[4].setColor(Color::White);
+        txt_editor[5].setColor(Color::Black);
 
-        txt_editor[0].setCharacterSize(50);
+        txt_editor[0].setCharacterSize(45);
         txt_editor[1].setCharacterSize(50);
-        txt_editor[2].setCharacterSize(100);
-        txt_editor[3].setCharacterSize(55);
+        txt_editor[2].setCharacterSize(50);
+        txt_editor[3].setCharacterSize(100);
+        txt_editor[4].setCharacterSize(55);
+        txt_editor[5].setCharacterSize(55);
 
-        txt_editor[0].setPosition({120,360});
-        txt_editor[1].setPosition({120,430});
-        txt_editor[2].setPosition({213,545});
-        txt_editor[3].setPosition({917,683});
+        txt_editor[0].setPosition({395,341});
+        txt_editor[1].setPosition({356,340});
+        txt_editor[2].setPosition({494,339});
+        txt_editor[3].setPosition({213,555});
+        txt_editor[4].setPosition({917,683});
+        txt_editor[5].setPosition({917,183});
 
-        txt_editor[0].setString("Black");
+        txt_editor[0].setString("Blanco");
         txt_editor[1].setString("<");
-        txt_editor[2].setString("JUGAR");
-        txt_editor[3].setString("Salir");
+        txt_editor[2].setString(">");
+        txt_editor[3].setString("JUGAR");
+        txt_editor[4].setString("Salir");
+        txt_editor[5].setString("?");
 
     }
     void renderMenu(RenderWindow &window){
@@ -413,7 +427,7 @@ struct ChessMenuScreen : public ChessScreen
             throw MenuMusicException();
             exit(1);
         }
-        if (!texture.loadFromFile("./assets/chess-game5.png"))
+        if (!texture.loadFromFile("./assets/Chess_Game.png"))
         {
             throw ChessImageException();
             exit(1);
@@ -453,7 +467,7 @@ struct ChessMenuScreen : public ChessScreen
                             return ChessGameScreen::SCREEN_NUMBER;
                             Vector2i posicion_mouse;
                             posicion_mouse=Mouse::getPosition(window);
-                            for (int i= 0; i<4; i++){
+                            for (int i= 0; i<6; i++){
 //                                if (option[i]->getGlobalBounds().Contains(posicion_mouse.x, posicion_mouse.y)){
                                     switch(i){
                                         case 0:
@@ -471,6 +485,9 @@ struct ChessMenuScreen : public ChessScreen
 
                                         case 4:
                                             exit(1);
+                                            break;
+
+                                        case 5:
                                             break;
                                     }
                                 }
