@@ -69,9 +69,11 @@
 			<Add directory="SFML-2.5.1/lib" />
 		</Linker>
 		<Unit filename="Chess.h" />
+		<Unit filename="ChessCreditsScreen.h" />
 		<Unit filename="ChessExceptions.h" />
 		<Unit filename="ChessGameScreen.h" />
 		<Unit filename="ChessMenuScreen.h" />
+		<Unit filename="ChessPauseScreen.h" />
 		<Unit filename="ChessScreens.h" />
 		<Unit filename="ChessTimer.h" />
 		<Unit filename="assets/Manecilla.png" />

@@ -2,7 +2,15 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="ChessMenuScreen.h" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="ChessTimer.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2287" topLine="70" />
+		</Cursor>
+		<Folding>
+			<Collapse line="75" />
+		</Folding>
+	</File>
+	<File name="ChessMenuScreen.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="4808" topLine="77" />
 		</Cursor>
@@ -10,29 +18,42 @@
 			<Collapse line="19" />
 		</Folding>
 	</File>
-	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+	<File name="ChessGameScreen.h" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1042" topLine="27" />
+			<Cursor1 position="12478" topLine="152" />
+		</Cursor>
+		<Folding>
+			<Collapse line="39" />
+		</Folding>
+	</File>
+	<File name="main.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1042" topLine="18" />
 		</Cursor>
 	</File>
-	<File name="ChessGameScreen.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Chess.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="6" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="10259" topLine="247" />
+			<Cursor1 position="10191" topLine="324" />
+		</Cursor>
+		<Folding>
+			<Collapse line="329" />
+			<Collapse line="337" />
+			<Collapse line="380" />
+		</Folding>
+	</File>
+	<File name="ChessCreditsScreen.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="831" topLine="10" />
 		</Cursor>
 	</File>
-	<File name="ChessScreens.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+	<File name="ChessScreens.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="548" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="Chess.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="6" zoom_2="0">
+	<File name="ChessPauseScreen.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2184" topLine="72" />
+			<Cursor1 position="754" topLine="14" />
 		</Cursor>
-		<Folding>
-			<Collapse line="328" />
-			<Collapse line="334" />
-			<Collapse line="375" />
-		</Folding>
 	</File>
 </CodeBlocks_layout_file>
