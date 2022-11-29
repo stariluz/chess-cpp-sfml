@@ -1,6 +1,7 @@
 #ifndef CHESSSCREENS_H_INCLUDED
 #define CHESSSCREENS_H_INCLUDED
 
+#include "ChessExceptions.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Audio/Music.hpp>

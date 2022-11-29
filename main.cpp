@@ -4,6 +4,7 @@
 #include <SFML/Audio/Sound.hpp>
 #include "Chess.h"
 #include "ChessScreens.h"
+#include "ChessExceptions.h"
 #include <iostream>
 #include <thread>
 
