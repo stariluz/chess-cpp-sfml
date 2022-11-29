@@ -357,9 +357,9 @@ struct ChessMenu{
     ChessMenu(){
         fuente = new Font();
         fuente->loadFromFile("./assets/Fuente.ttf");
-        option = new RectangleShape[8];
-        txt_editor = new Text[4];
-        for (int i= 0; i<4; i++){
+        option = new RectangleShape[6];
+        txt_editor = new Text[6];
+        for (int i= 0; i<8; i++){
             txt_editor[i]= Text("", *fuente);
         }
         option[0]= RectangleShape({140,40});
