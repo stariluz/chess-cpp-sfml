@@ -22,8 +22,15 @@ struct ChessScreen{
     static const int CLICK_ON_NOTHING=0;
     static const int CLICK_ON_BUTTONS=1;
     bool wasRun=false;
+
     virtual int Run(RenderWindow &window){
         wasRun=true;
+        Text* texto = NULL;
+        texto = new Text;
+        texto -> setColor(Color::Black);
+        texto -> setCharacterSize(60);
+        texto -> setString("WENAS");
+
         return 0;
     }
 
