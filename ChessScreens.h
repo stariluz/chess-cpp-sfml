@@ -57,24 +57,6 @@ struct ChessGame{
             STATUS_EATED = 3 // Estado de comer pieza
         */
 
-//         cout << "\nButton pressed" << endl; // DEV
-//         cout << "mouse x: " << x << endl; // DEV
-//         cout << "mouse y: " << y << endl; // DEV
-//        switch(status){
-//        case STATUS_IDLE:
-//            cout<<"IDLE\n";
-//            break;
-//        case STATUS_SELECTED:
-//            cout<<"SELECTED\n";
-//            break;
-//        case STATUS_RELEASED:
-//            cout<<"RELEASED\n";
-//            break;
-//        case STATUS_EATED:
-//            cout<<"EATED\n";
-//            break;
-//        }
-
         ChessPiece** playerPiecesInCoord=NULL;
         ChessPiece** rivalPiecesInCoord=NULL;
         ChessPiece* newClickedPiece=NULL;
@@ -268,14 +250,13 @@ struct ChessGameScreen : public ChessScreen{
     Music music;
     int windowHeight;
     int windowWidth;
-//    ChessPiece** whitePieces;
-//    ChessPiece** blackPieces;
 
     ChessBoard board;
     Event event;
 
+    int save_time;
     int current_time;
-    Game_Timer *s=NULL;
+    Game_Timer *timer=NULL;
     Thread *timer_thread=NULL;
 
     ChessGameScreen(){
@@ -295,20 +276,31 @@ struct ChessGameScreen : public ChessScreen{
 
         //Inicializamos un contador
         current_time=0;
-        s=new Game_Timer(current_time);
-        timer_thread=new Thread(ref(*s));
+        timer=new Game_Timer(current_time, MinuteSecond(0,10), ChessPlayer::updatePlayerInTurn);
+        timer_thread=new Thread(
+            ref( *timer )
+        );
         //TODO: Crear una variable para establecer el tiempo actual y el limite de tiempo
     }
 
+    /* Declaracion de la funcion Run*/
     virtual int Run(RenderWindow &window);
 
     virtual void Pause(){
         // cout<<"PAUSAAAAAAAAAAAAAAAAAAAA";
         music.sf::SoundStream::pause();
         ChessGame::restoreMovement();
+        save_time=current_time;
+        timer->stop();
         // timer_thread->wait();
     }
 
+    /* Metodo que realiza toda la lógica necesaria para el cambio de turno */
+//    void changeOfTurn(){
+//        ChessPlayer::updatePlayerInTurn();
+//        current_time=0;
+//        timer=new Game_Timer(current_time, MinuteSecond(0,10), ref(changeOfTurn));
+//    }
     static const int CLICK_ON_BOARD=2;
     int onClick(Event::MouseButtonEvent mouse){
         /**
@@ -420,7 +412,8 @@ struct ChessMenu{
     }
 };
 
-struct ChessMenuScreen : public ChessScreen{
+struct ChessMenuScreen : public ChessScreen
+{
     static const int SCREEN_NUMBER;
     Music music;
     Event event;
@@ -428,7 +421,8 @@ struct ChessMenuScreen : public ChessScreen{
     Sprite sprite;
     ChessMenu menu;
     list<botton> option;
-    ChessMenuScreen(){
+    ChessMenuScreen()
+    {
         if (!music.openFromFile("./assets/sounds/MenuMusic.ogg")){
             throw MenuMusicException();
             exit(1);
@@ -512,6 +506,7 @@ struct ChessMenuScreen : public ChessScreen{
     virtual void Pause(){
         music.sf::SoundStream::pause();
     }
+
 };
 
 struct ChessPauseScreen : public ChessScreen{
@@ -531,7 +526,6 @@ int ChessGameScreen::Run(RenderWindow &window){
         wasRun=true;
         music.setLoop(true);
         // Ejecutamos un thread con el timer
-        timer_thread->launch();
     }else{
         /**
             Codigo a ejecutar siempre despues de la primera llamada a Run.
@@ -540,6 +534,7 @@ int ChessGameScreen::Run(RenderWindow &window){
     }
 
     music.play();
+    timer_thread->launch();
 
     bool running = true;
 
@@ -590,14 +585,8 @@ int ChessGameScreen::Run(RenderWindow &window){
             window.draw(piece->sprite);
         }
 
-        if(s->eneable == true)
-        {
-            window.draw(s->clock_sprite);
-            s->hand_timer_sprite.setOrigin(sf::Vector2f(50,50));
-            s->hand_timer_sprite.setPosition(sf::Vector2f(50,50));
-            s->hand_timer_sprite.setRotation(s->degrees*s->current_time);
-            window.draw(s->hand_timer_sprite);
-        }
+        window.draw(timer->clock_sprite);
+        window.draw(timer->hand_timer_sprite);
 
         window.display();
     }
