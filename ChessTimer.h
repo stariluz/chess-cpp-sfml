@@ -168,10 +168,12 @@ struct Game_Timer
     //Metodos para configurar el limite de tiempo en minutos y segundos
     void setMinutsLimit(int new_minuts_limit){
         limit_minuts = new_minuts_limit;
+        assert(limit_minuts >= 0 && new_minuts_limit <= 60);
     }
 
     void setSecondsLimit(int new_seconds_limit){
         limit_seconds = new_seconds_limit;
+        assert(limit_seconds >= 0 && new_seconds_limit <= 60);
     }
 
     //Funcion amiga para el operador <<

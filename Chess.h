@@ -29,6 +29,7 @@ static Texture loadResource(string filename){
     if(!texture.loadFromFile(filename)){
         throw ChessImageException();
     }
+
     return texture;
 }
 // Estructura que almacena el manejo de cordenadas en el tablero por cada pieza
@@ -138,14 +139,12 @@ struct ChessPieceTypes{
     static IntRect getSpriteIntRectByColorType(int color, int pieceType){
         try{
             validate(pieceType,color);
-        }catch(PieceTypeException& e){
-            cout<<"Exception caught: " << e.what() << endl;
-        }catch(PieceColorException& ee){
-            cout<<"Exception caught: " << ee.what() << endl;
-        }catch(std::bad_alloc eee){
-            cout<<"ERROR: " << eee.what();
+        }catch(PieceTypeException& Piece){
+            cout<<"Excepcion de pieza atrapada: " << Piece.what() << endl;
+        }catch(PieceColorException& Color){
+            cout<<"Excepcion de color atrapada: " << Color.what() << endl;
         }catch(...){
-            cout<<"ERROR\n";
+            cout<<"ERROR 404 :C\n";
         }
         int pieceTypePX=pieceType*ChessCoord::SIZE;
         int colorPX=color*ChessCoord::SIZE;
@@ -155,11 +154,15 @@ struct ChessPieceTypes{
 
     // Validar si la pieza es valida según el tipo y el color
     static void validate(int pieceType, int color){
+        try{
         if(pieceType<0||pieceType>= 6){
             throw PieceTypeException();
         }else if(color<0||color>=2){
             cout<<"The color isn't valid\n";
             throw PieceColorException();
+        }
+        }catch(bad_alloc& memoria){
+            cout << "Error en la memoria..." << memoria.what();
         }
     }
 };

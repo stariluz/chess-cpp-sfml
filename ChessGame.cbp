@@ -69,6 +69,7 @@
 			<Add directory="SFML-2.5.1/lib" />
 		</Linker>
 		<Unit filename="Chess.h" />
+		<Unit filename="ChessExceptions.h" />
 		<Unit filename="ChessScreens.h" />
 		<Unit filename="assets/Manecilla.png" />
 		<Unit filename="assets/Marco_reloj.png" />

@@ -343,8 +343,9 @@ int ChessGameScreen::Run(RenderWindow &window){
             Aquí debe ir todo código que reanude las acciones que el metodo Pause haya detenido.
         */
     }
-
+    music.setVolume(10.f);
     music.play();
+
     timer_thread->launch();
 
     bool running = true;
