@@ -79,7 +79,8 @@ struct ChessCoord {
         return result;
     }
 
-    static ChessCoord getChessPosition(int pxX, int pxY) {
+    template <typename T>
+    static ChessCoord getChessPosition(T pxX, T pxY) {
         int pxX_I=pxX/ChessCoord::SIZE+1;
         int pxY_I=pxY/ChessCoord::SIZE+1;
         return ChessCoord(pxX_I,pxY_I);
@@ -332,7 +333,9 @@ struct ChessPlayer{
     }
 
     // Obtener piezas del jugador en el turno actual en una posición a partir de los pixeles recibidos
-    static ChessPiece** getPiecesOfPlayerInTurnAtPosition(int pxX, int pxY){
+
+    template <typename T>
+    static ChessPiece** getPiecesOfPlayerInTurnAtPosition(T pxX, T pxY){
         ChessCoord coord=ChessCoord::getChessPosition(pxX,pxY);
         ChessPiece** results=new ChessPiece*[2];
         results[0]=NULL;
@@ -352,7 +355,9 @@ struct ChessPlayer{
     }
 
     // Obtener piezas del rival en el turno actual en una posición a partir de los pixeles recibidos
-    static ChessPiece** getPiecesOfRivalInTurnAtPosition(int pxX, int pxY){
+
+    template <typename T>
+    static ChessPiece** getPiecesOfRivalInTurnAtPosition(T pxX, T pxY){
         ChessCoord coord=ChessCoord::getChessPosition(pxX,pxY);
         ChessPiece** results=new ChessPiece*[2];
         results[0]=NULL;

@@ -24,6 +24,13 @@ struct ChessPauseScreen : public ChessScreen{
 
     ChessPauseScreen(){
         sprite=Sprite(PauseTexture);
+        if (!music.openFromFile("./assets/sounds/PauseMusic.ogg")){
+            throw BackgroundMusicException();
+        }
+    }
+
+    virtual void Pause(){
+        music.sf::SoundStream::pause();
     }
 
     virtual int Run(RenderWindow &window){

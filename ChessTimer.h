@@ -8,7 +8,7 @@
 #include <iostream>
 #include <windows.h>
 #include <stdio.h>
-#include <thread>
+#include <mutex>
 
 using namespace std;
 using namespace sf;
@@ -56,6 +56,13 @@ struct Game_Timer
     Game_Timer(int &current_time_external, MinuteSecond limitTime, void _callback())
     {
         eneable = false;
+
+        clock_texture = loadResource(TIMER_FRAME_FILE);
+        hand_timer_texture = loadResource(TIMER_HAND_FILE);
+
+        clock_sprite.setTexture(clock_texture);
+        hand_timer_sprite.setTexture(hand_timer_texture);
+
         current_time = current_time_external;
         init_Timer();
         setMinutsLimit(limitTime.minute);
@@ -67,38 +74,28 @@ struct Game_Timer
     //Inicializa los valores por defecto del Timer
     void init_Timer()
     {
-        clock_texture = loadResource(TIMER_FRAME_FILE);
-        hand_timer_texture = loadResource(TIMER_HAND_FILE);
 
-        clock_sprite.setTexture(clock_texture);
-        hand_timer_sprite.setTexture(hand_timer_texture);
-
-        init_time();
-
-//        limit_seconds = 0;
-//        limit_minuts = 0;
-//
-//        limit_time=0;
+        minuts=current_time/60;
+        seconds=current_time%60;
 
         degrees = 0;
         on_timer();
     }
 
-    void init_time(){
-        minuts=current_time/60;
-        seconds=current_time%60;
-    }
     //Aqui se maneja la ejecuccion del hilo cunado se invoca el laucher
     operator()()
     {
+        mutex mtx;
+        mtx.lock();
         cout<<"Iniciando contador"<<endl;
-
+        cout<<"CURRENT TIME: "<<current_time<<"\n";
         on_timer();
 
         limit_time = convert_Time_Limit();
         degrees = 360/limit_time;
 
         run();
+        mtx.unlock();
     }
 
     //Metodos de control para el Timer, si se ecnuentra ncendido o apagado
@@ -108,7 +105,7 @@ struct Game_Timer
     }
     void off_timer()
     {
-        eneable = false;
+        running = false;
     }
 
     //En este metodo se ejecuta todas las acciones del timer
@@ -116,6 +113,7 @@ struct Game_Timer
     {
         cout<<"Limite de tiempo:"<<limit_time<<endl;
         cout<<degrees<<endl;
+        running=true;
         while(limit_time>current_time && running){
             updateTimerSprite();
             Sleep(1000);
@@ -130,10 +128,10 @@ struct Game_Timer
             cout<<"Tiempo actual:"<<current_time<<endl;
         }
         //Termino del turno
-        cout<<"Cambiando turno"<<endl;
-        reset_Timer();
         if(running){
+            cout<<"Cambiando turno"<<endl;
             callback();
+            reset_Timer();
         }
         running=false;
     }
@@ -146,7 +144,6 @@ struct Game_Timer
 
     void stop(){
         running=false;
-        cout<<" DETENTE";
     }
 
     //Esta funcion convierte los limites de tiempo a una unidad unica para su manejo
