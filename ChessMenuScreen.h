@@ -14,14 +14,6 @@
 using namespace std;
 using namespace sf;
 
-//struct botton{
-//    RectangleShape r;
-//    string name;
-//    boton(string identidad, RectangleShape rect){
-//        name=identidad;
-//        r= rect;
-//    }
-//};
 static int MAIN_PLAYER_COLOR=0;
 static int MINUTES_PER_TURN=1;
 
@@ -67,9 +59,10 @@ struct ChessMenu{
         minutesShape.setFillColor(Color::Red);
         minutesShape.setPosition({430,455});
 
-        minutesText.setColor(Color::White);
+        minutesText.setFont(*fuente);
+        minutesText.setColor(Color::Red);
         minutesText.setCharacterSize(50);
-        minutesText.setPosition({395,341});
+        minutesText.setPosition({450,435});
         minutesText.setString("1");
 
 //        txt_editor[0].setString("Blanco");
@@ -89,7 +82,7 @@ struct ChessMenu{
     }
     void updateMinutes(){
         string text=""+MINUTES_PER_TURN;
-        cout<<"TEXT: "<<MINUTES_PER_TURN<<"\n";
+        cout<<"TEXT: "<<text<<"\n";
         minutesText.setString(text);
     }
 };
@@ -178,7 +171,7 @@ struct ChessMenuScreen : public ChessScreen
             window.clear();
             window.draw(sprite);
             menu.renderMenu(window);
-            window.draw(menu.minutesShape);
+//            window.draw(menu.minutesShape);
             window.draw(menu.minutesText);
             window.display();
         }
