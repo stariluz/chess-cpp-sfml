@@ -7,6 +7,7 @@
 #include <SFML/Audio/Sound.hpp>
 #include "Chess.h"
 #include "ChessScreens.h"
+#include "ChessMenuScreen.h"
 #include "ChessExceptions.h"
 #include "ChessTimer.h"
 
@@ -263,20 +264,6 @@ struct ChessGameScreen : public ChessScreen{
             throw BackgroundMusicException();
             cout<<"ERROR";// TODO: exception image
         }
-
-        // Reserva de espacio para los jugadores y sus piezas
-        ChessPlayer::players=new ChessPlayer[2];
-        // TODO: Solicitar al menú el color del jugador 1, para crearlos en ese orden
-        ChessPlayer::players[0]=ChessPlayer::createPlayer(ChessPiece::COLOR_WHITE);
-        ChessPlayer::players[1]=ChessPlayer::createPlayer(ChessPiece::COLOR_BLACK);
-
-        //Inicializamos un contador
-        current_time=0;
-        timer=new Game_Timer(current_time, MinuteSecond(0,10), ChessPlayer::updatePlayerInTurn);
-        timer_thread=new Thread(
-            ref( *timer )
-        );
-        //TODO: Crear una variable para establecer el tiempo actual y el limite de tiempo.
     }
 
     // Declaracion de la funcion Run
@@ -288,15 +275,8 @@ struct ChessGameScreen : public ChessScreen{
         ChessGame::restoreMovement();
         save_time=current_time;
         timer->stop();
-        // timer_thread->wait();
     }
 
-    /* Metodo que realiza toda la lógica necesaria para el cambio de turno */
-//    void changeOfTurn(){
-//        ChessPlayer::updatePlayerInTurn();
-//        current_time=0;
-//        timer=new Game_Timer(current_time, MinuteSecond(0,10), ref(changeOfTurn));
-//    }
     static const int CLICK_ON_BOARD=2;
     int onClick(Event::MouseButtonEvent mouseEvent){
         /**
@@ -336,7 +316,26 @@ int ChessGameScreen::Run(RenderWindow &window){
         */
         wasRun=true;
         music.setLoop(true);
+
+        // Reserva de espacio para los jugadores y sus piezas
+        ChessPlayer::players=new ChessPlayer[2];
+        if(MAIN_PLAYER_COLOR==ChessPiece::COLOR_WHITE){
+            ChessPlayer::players[0]=ChessPlayer::createPlayer(ChessPiece::COLOR_BLACK);
+            ChessPlayer::players[1]=ChessPlayer::createPlayer(ChessPiece::COLOR_WHITE);
+
+        }else{
+            ChessPlayer::players[0]=ChessPlayer::createPlayer(ChessPiece::COLOR_WHITE);
+            ChessPlayer::players[1]=ChessPlayer::createPlayer(ChessPiece::COLOR_BLACK);
+
+        }
         // Ejecutamos un thread con el timer
+
+        //Inicializamos un contador
+        current_time=0;
+        timer=new Game_Timer(current_time, MinuteSecond(MINUTES_PER_TURN,0), ChessPlayer::updatePlayerInTurn);
+        timer_thread=new Thread(
+            ref( *timer )
+        );
     }else{
         /**
             Codigo a ejecutar siempre despues de la primera llamada a Run.
