@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <iostream>
 #include <windows.h>
+#include <thread>
 #include <stdio.h>
 
 using namespace std;
@@ -106,7 +107,7 @@ struct MenuMusicException : public exception{
 // Metodo para cargar las texturas
 static Texture loadResource(string filename){
     Texture texture;
-    // DEV cout <<filename<<"\n";
+     cout <<filename<<"\n"; // DEV
     if(!texture.loadFromFile(filename)){
         throw ChessImageException();
     }
@@ -553,6 +554,14 @@ ChessPiece* ChessPiece::createPiece(ChessCoord _position, int pieceType, int col
     return newPiece;
 }
 
+struct MinuteSecond{
+    int minute, second;
+    MinuteSecond(int _minute, int _second){
+        minute=_minute;
+        second=_second;
+    }
+};
+
 /*
     Esta estructura llevara el manejo del reloj del juego
 */
@@ -563,12 +572,13 @@ struct Game_Timer
     Texture clock_texture, hand_timer_texture;
     Sprite clock_sprite,hand_timer_sprite;
 
-    //A
     bool eneable;
-    int seconds, minuts,limit_seconds,limit_minuts;
+    int seconds, minuts;
+    int limit_seconds, limit_minuts;
     int current_time;
     int limit_time;
-
+    int running=false;
+    void (*callback)();
     float degrees;
 
     /* Constructores */
@@ -580,10 +590,19 @@ struct Game_Timer
     Game_Timer(int &current_time_external)
     {
         eneable = false;
-        init_Timer();
         current_time = current_time_external;
+        init_Timer();
     }
 
+    Game_Timer(int &current_time_external, MinuteSecond limitTime, void _callback())
+    {
+        eneable = false;
+        current_time = current_time_external;
+        init_Timer();
+        setMinutsLimit(limitTime.minute);
+        setSecondsLimit(limitTime.second);
+        callback=_callback;
+    }
     /* Metodos del Timer*/
 
     //Inicializa los valores por defecto del Timer
@@ -595,27 +614,27 @@ struct Game_Timer
         clock_sprite.setTexture(clock_texture);
         hand_timer_sprite.setTexture(hand_timer_texture);
 
-        seconds = 0;
-        minuts = 0;
+        init_time();
 
-        limit_seconds = 0;
-        limit_minuts = 0;
-
-        limit_time=0;
+//        limit_seconds = 0;
+//        limit_minuts = 0;
+//
+//        limit_time=0;
 
         degrees = 0;
         on_timer();
     }
 
+    void init_time(){
+        minuts=current_time/60;
+        seconds=current_time%60;
+    }
     //Aqui se maneja la ejecuccion del hilo cunado se invoca el laucher
     operator()()
     {
         cout<<"Iniciando contador"<<endl;
 
         on_timer();
-
-        setMinutsLimit(1);
-        setSecondsLimit(0);
 
         limit_time = convert_Time_Limit();
         degrees = 360/limit_time;
@@ -626,7 +645,7 @@ struct Game_Timer
     //Metodos de control para el Timer, si se ecnuentra ncendido o apagado
     void on_timer()
     {
-        eneable = true;
+        running = true;
     }
     void off_timer()
     {
@@ -638,26 +657,37 @@ struct Game_Timer
     {
         cout<<"Limite de tiempo:"<<limit_time<<endl;
         cout<<degrees<<endl;
-
-        while(limit_time>current_time){
-            if(eneable==true)
-            {
-                Sleep(1000);
-                if(seconds == 60){
-                    seconds = 0;
-                    minuts += 1;
-                }
-                seconds +=1;
-                cout<<"Segundos:"<<seconds<<endl;
-                current_time = (minuts*60) + seconds;
-                cout<<"Tiempo actual:"<<current_time<<endl;
-            }else{
-                //No hacer nada
+        while(limit_time>current_time && running){
+            updateTimerSprite();
+            Sleep(1000);
+            if(seconds == 60){
+                seconds = 0;
+                minuts += 1;
             }
+            seconds +=1;
+
+            cout<<"Segundos:"<<seconds<<endl;
+            current_time = (minuts*60) + seconds;
+            cout<<"Tiempo actual:"<<current_time<<endl;
         }
         //Termino del turno
         cout<<"Cambiando turno"<<endl;
         reset_Timer();
+        if(running){
+            callback();
+        }
+        running=false;
+    }
+
+    void updateTimerSprite(){
+        hand_timer_sprite.setOrigin(sf::Vector2f(50,50));
+        hand_timer_sprite.setPosition(sf::Vector2f(50,50));
+        hand_timer_sprite.setRotation( degrees * current_time );
+    }
+
+    void stop(){
+        running=false;
+        cout<<" DETENTE";
     }
 
     //Esta funcion convierte los limites de tiempo a una unidad unica para su manejo
