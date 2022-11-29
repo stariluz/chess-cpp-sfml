@@ -95,7 +95,7 @@ struct ChessMenu{
 struct ChessMenuScreen : public ChessScreen
 {
     static const int STATUS_PLAY=1;
-    static const int STATUS_PAUSE=2;
+    static const int STATUS_INFO=2;
     Music music;
     Event event;
     Texture texture;
@@ -160,8 +160,8 @@ struct ChessMenuScreen : public ChessScreen
                             for (int i= 0; i<6; i++){
                                 if (menu.option[i].getGlobalBounds().contains(posicion_mouse.x, posicion_mouse.y)){
                                     int operation=actions[i](menu);
-                                    if(operation==STATUS_PAUSE){
-                                        return CHESS_PAUSE_SCREEN_NUMBER;
+                                    if(operation==STATUS_INFO){
+                                        return CHESS_INFO_SCREEN_NUMBER;
                                     }else if(operation==STATUS_PLAY){
                                         return CHESS_GAME_SCREEN_NUMBER;
                                     }
@@ -218,8 +218,8 @@ struct ChessMenuScreen : public ChessScreen
         cout<<"CHANGECOLOR: "<<MAIN_PLAYER_COLOR<<"\n";
     }
     static int ActionPause(ChessMenu& menu){
-        cout<<"PAUSE\n";
-        return STATUS_PAUSE;
+        cout<<"INFO\n";
+        return STATUS_INFO;
     }
 };
 

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1669700132 source:d:\adrian\juego-ajedrez-cap\main.cpp
+1669706320 source:d:\adrian\juego-ajedrez-cap\main.cpp
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 	<SFML/Audio/Music.hpp>
@@ -8,6 +8,8 @@
 	"ChessScreens.h"
 	"ChessGameScreen.h"
 	"ChessMenuScreen.h"
+	"ChessPauseScreen.h"
+	"ChessCreditsScreen.h"
 	"ChessExceptions.h"
 	<iostream>
 
@@ -420,7 +422,7 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1669700200 d:\adrian\juego-ajedrez-cap\chess.h
+1669706716 d:\adrian\juego-ajedrez-cap\chess.h
 	"ChessExceptions.h"
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
@@ -533,13 +535,12 @@
 	<SFML/Audio/Export.hpp>
 	<string>
 
-1669700006 d:\adrian\juego-ajedrez-cap\chessscreens.h
+1669706710 d:\adrian\juego-ajedrez-cap\chessscreens.h
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 	<SFML/Audio/Music.hpp>
 	<SFML/Audio/Sound.hpp>
 	"Chess.h"
-	"ChessScreens.h"
 	"ChessExceptions.h"
 	"ChessTimer.h"
 	<iostream>
@@ -560,7 +561,7 @@
 	<stdio.h>
 	<thread>
 
-1669701896 d:\adrian\juego-ajedrez-cap\chessgamescreen.h
+1669705990 d:\adrian\juego-ajedrez-cap\chessgamescreen.h
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 	<SFML/Audio/Music.hpp>
@@ -571,7 +572,7 @@
 	"ChessExceptions.h"
 	"ChessTimer.h"
 
-1669701570 d:\adrian\juego-ajedrez-cap\chessmenuscreen.h
+1669706712 d:\adrian\juego-ajedrez-cap\chessmenuscreen.h
 	<SFML/Graphics.hpp>
 	<SFML/Audio.hpp>
 	<SFML/Audio/Music.hpp>
@@ -581,4 +582,26 @@
 	"ChessExceptions.h"
 	"ChessTimer.h"
 	<sstream>
+
+1669705756 d:\adrian\juego-ajedrez-cap\chesspausescreen.h
+	<SFML/Graphics.hpp>
+	<SFML/Audio.hpp>
+	<SFML/Audio/Music.hpp>
+	<SFML/Audio/Sound.hpp>
+	"Chess.h"
+	"ChessScreens.h"
+	"ChessExceptions.h"
+	"ChessTimer.h"
+	<iostream>
+
+1669706394 d:\adrian\juego-ajedrez-cap\chesscreditsscreen.h
+	<SFML/Graphics.hpp>
+	<SFML/Audio.hpp>
+	<SFML/Audio/Music.hpp>
+	<SFML/Audio/Sound.hpp>
+	"Chess.h"
+	"ChessScreens.h"
+	"ChessExceptions.h"
+	"ChessTimer.h"
+	<iostream>
 

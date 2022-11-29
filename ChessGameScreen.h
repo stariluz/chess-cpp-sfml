@@ -14,7 +14,23 @@
 using namespace std;
 using namespace sf;
 
+
+/// INICIALIZAR DATOS DEL HEADER "CHESS:H"
+
+// Constante para la ubicación de la imagen del tablero
+const string Chess::BOARD_SPRITESHEET_FILENAME="./assets/chess_board.png";
+
+// Constante para la ubicación del spritesheet de piezas
+const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png";
+
+// Constante para los limites de la pantalla
 const IntRect ChessBoard::LIMITS=IntRect(0, 0, ChessCoord::SIZE*8, ChessCoord::SIZE*8);
+
+// Implementación de la constante estática de tamaño para la unidad de pixeles
+const int ChessCoord::SIZE=100;
+
+// Abrir el spritesheet de piezas
+const Texture ChessPiece::spriteSheet=loadResource(Chess::PIECES_SPRITESHEET_FILENAME);
 
 /**
     Estructura del juego, maneja la seleccion de piezas y las mecanicas de seleccion
@@ -248,6 +264,22 @@ ChessPiece ChessGame::stateSelectedPiece;
 list<ChessCoord> ChessGame::avaiableMovements;
 
 
+struct ChessGameButtons{
+    RectangleShape pauseButton;
+
+    ChessGameButtons(){
+
+        pauseButton=RectangleShape({80,80});
+        pauseButton.setFillColor(Color::Transparent);
+        pauseButton.setPosition({949,682});
+
+    }
+    void renderButtons(RenderWindow &window){
+        window.draw(pauseButton);
+    }
+};
+
+
 struct ChessGameScreen : public ChessScreen{
     Music music;
 
@@ -258,11 +290,11 @@ struct ChessGameScreen : public ChessScreen{
     int current_time;
     Game_Timer *timer=NULL;
     Thread *timer_thread=NULL;
+    ChessGameButtons buttons;
 
     ChessGameScreen(){
         if (!music.openFromFile("./assets/sounds/BackgroundMusic.ogg")){
             throw BackgroundMusicException();
-            cout<<"ERROR";// TODO: exception image
         }
     }
 
@@ -277,6 +309,7 @@ struct ChessGameScreen : public ChessScreen{
         timer->stop();
     }
 
+    static const int CLICK_ON_PAUSE=3;
     static const int CLICK_ON_BOARD=2;
     int onClick(Event::MouseButtonEvent mouseEvent){
         /**
@@ -298,8 +331,9 @@ struct ChessGameScreen : public ChessScreen{
                 ChessPlayer::updatePlayerInTurn();
             }
             return CLICK_ON_BOARD;
+        }else if(buttons.pauseButton.getGlobalBounds().contains(mouseEvent.x, mouseEvent.y)){
+            return CLICK_ON_PAUSE;
         }else{
-            cout << "NO CLICKEASTE NAAAAAAAAAAAAAA";
             return CLICK_ON_NOTHING;
         }
     }
@@ -370,6 +404,8 @@ int ChessGameScreen::Run(RenderWindow &window){
                     int operation=onClick(event.mouseButton);
                     if(operation == CLICK_ON_NOTHING){ // DEV
                         return CHESS_MENU_SCREEN_NUMBER;
+                    }else if(operation==CLICK_ON_PAUSE){
+                        return CHESS_PAUSE_SCREEN_NUMBER;
                     }
                 }
             }
@@ -388,6 +424,7 @@ int ChessGameScreen::Run(RenderWindow &window){
         for(ChessPiece* piece:ChessPlayer::players[ChessPlayer::playerInTurn].pieces){
             window.draw(piece->sprite);
         }
+        buttons.renderButtons(window);
 
         window.draw(timer->clock_sprite);
         window.draw(timer->hand_timer_sprite);

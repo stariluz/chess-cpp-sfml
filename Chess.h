@@ -80,9 +80,9 @@ struct ChessCoord {
     }
 
     static ChessCoord getChessPosition(int pxX, int pxY) {
-        pxX=pxX/ChessCoord::SIZE+1;
-        pxY=pxY/ChessCoord::SIZE+1;
-        return ChessCoord(pxX,pxY);
+        int pxX_I=pxX/ChessCoord::SIZE+1;
+        int pxY_I=pxY/ChessCoord::SIZE+1;
+        return ChessCoord(pxX_I,pxY_I);
     }
     ChessCoord operator + (const ChessCoord& obj) {
         ChessCoord result;

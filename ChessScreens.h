@@ -6,7 +6,6 @@
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Audio/Sound.hpp>
 #include "Chess.h"
-#include "ChessScreens.h"
 #include "ChessExceptions.h"
 #include "ChessTimer.h"
 #include <iostream>
@@ -14,9 +13,12 @@
 using namespace std;
 using namespace sf;
 
+// Asignación de el numero de las pantallas según el orden
 const int CHESS_MENU_SCREEN_NUMBER=1;
 const int CHESS_GAME_SCREEN_NUMBER=2;
 const int CHESS_PAUSE_SCREEN_NUMBER=3;
+const int CHESS_INFO_SCREEN_NUMBER=4;
+
 
 struct ChessScreen{
     static const int CLICK_ON_NOTHING=0;
@@ -30,9 +32,6 @@ struct ChessScreen{
     virtual void Pause(){
         return;
     }
-};
-
-struct ChessPauseScreen : public ChessScreen{
 };
 
 #endif // CHESSSCREENS_H_INCLUDED
