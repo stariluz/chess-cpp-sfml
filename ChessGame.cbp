@@ -73,6 +73,7 @@
 		<Unit filename="ChessGameScreen.h" />
 		<Unit filename="ChessMenuScreen.h" />
 		<Unit filename="ChessScreens.h" />
+		<Unit filename="ChessTimer.h" />
 		<Unit filename="assets/Manecilla.png" />
 		<Unit filename="assets/Marco_reloj.png" />
 		<Unit filename="assets/chess_board.jpg" />

@@ -426,7 +426,9 @@ int ChessGameScreen::Run(RenderWindow &window){
         }
         buttons.renderButtons(window);
 
+        timer->clock_sprite.setPosition(sf::Vector2f(875,350));
         window.draw(timer->clock_sprite);
+        timer->hand_timer_sprite.setPosition(sf::Vector2f(875+50,350+50));
         window.draw(timer->hand_timer_sprite);
 
         /*
