@@ -8,7 +8,6 @@
 #include "ChessMenuScreen.h"
 #include "ChessExceptions.h"
 #include <iostream>
-#include <thread>
 
 using namespace std;
 using namespace sf;
@@ -45,6 +44,7 @@ int main()
     screens.push_back(new ChessScreen()); // Empty screen, it doesn't do anything
     screens.push_back(new ChessMenuScreen()); // Screen no. 1
     screens.push_back(new ChessGameScreen()); // Screen no. 2
+    screens.push_back(new ChessPauseScreen()); // Screen no. 3
     int currentScreen=1;
     int nextScreen=currentScreen;
 
@@ -55,5 +55,6 @@ int main()
             currentScreen=nextScreen;
         }
     }
+    //TODO: LIBERAR MEMORIA
     return 0;
 }

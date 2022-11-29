@@ -16,6 +16,7 @@ using namespace sf;
 
 const int CHESS_MENU_SCREEN_NUMBER=1;
 const int CHESS_GAME_SCREEN_NUMBER=2;
+const int CHESS_PAUSE_SCREEN_NUMBER=3;
 
 struct ChessScreen{
     static const int CLICK_ON_NOTHING=0;
