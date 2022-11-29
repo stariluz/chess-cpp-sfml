@@ -1,16 +1,18 @@
 #ifndef CHESSSCREENS_H_INCLUDED
 #define CHESSSCREENS_H_INCLUDED
 
-#include "ChessExceptions.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Audio/Music.hpp>
 #include <SFML/Audio/Sound.hpp>
 #include "Chess.h"
 #include "ChessScreens.h"
+#include "ChessExceptions.h"
+#include "ChessTimer.h"
 #include <iostream>
 #include <thread>
 #include <sstream>
+
 using namespace std;
 using namespace sf;
 

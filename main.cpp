@@ -19,7 +19,7 @@ const string Chess::BOARD_SPRITESHEET_FILENAME="./assets/chess_board.jpg";
 // Constante para la ubicación del spritesheet de piezas
 const string Chess::PIECES_SPRITESHEET_FILENAME="./assets/pieces_spritesheet.png";
 
-// Constante para la unidad en pixeles
+// Implementación de la constante estática de tamaño para la unidad de pixeles
 const int ChessCoord::SIZE=100;
 
 // Abrir el spritesheet de piezas
